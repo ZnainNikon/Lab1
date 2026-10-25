@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.16)
+project(Lab1NTree CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(wxWidgets REQUIRED COMPONENTS core base)
+include(${wxWidgets_USE_FILE})
+find_package(GTest REQUIRED)
+
+enable_testing()
+
+add_executable(gui_main src/main.cpp src/Sequence.cpp)
+target_include_directories(gui_main PRIVATE src)
+target_link_libraries(gui_main PRIVATE ${wxWidgets_LIBRARIES})
+
+add_executable(console_main src/console_main.cpp src/Sequence.cpp)
+target_include_directories(console_main PRIVATE src)
+
+add_executable(tests src/tests.cpp src/Sequence.cpp)
+target_include_directories(tests PRIVATE src)
+target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main)
+add_test(NAME gtest_ntree COMMAND tests)

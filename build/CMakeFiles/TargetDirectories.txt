@@ -1,0 +1,6 @@
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/gui_main.dir
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/console_main.dir
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/tests.dir
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/test.dir
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/edit_cache.dir
+/Users/polzovatel/Desktop/lab1/build/CMakeFiles/rebuild_cache.dir
