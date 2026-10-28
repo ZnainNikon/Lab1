@@ -38,7 +38,7 @@ int main()
     std::cout << "| " 
               << std::left << std::setw(8) << "N" << " | "
               << std::left << std::setw(12) << "Вставка (мс)" << " | "
-              << std::left << std::setw(12) << "Поиск (мс)" << "   | "
+              << std::left << std::setw(12) << "Поиск (мс)" << " | "
               << std::left << std::setw(12) << "Удаление (мс)" << "|\n";
     std::cout << separator << "\n";
 
