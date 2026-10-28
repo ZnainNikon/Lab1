@@ -1,6 +1,6 @@
 CMakeFiles/console_main.dir/src/console_main.cpp.o: \
   /Users/polzovatel/Desktop/lab1/src/console_main.cpp \
-  /Users/polzovatel/Desktop/lab1/src/NTree.hpp \
+  /Users/polzovatel/Desktop/lab1/src/BinaryTree.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/functional \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -820,4 +820,4 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o: \
   /Users/polzovatel/Desktop/lab1/src/LinkedList.hpp \
   /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp \
   /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp \
-  /Users/polzovatel/Desktop/lab1/src/NTree.tpp
+  /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp

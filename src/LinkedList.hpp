@@ -7,26 +7,18 @@
 #include <cstddef>
 #include "Sequence.hpp"
 
-template <class T> class Node
-{
-    public:
-    T key;
-    Node* next{nullptr};
-
-    Node();
-    Node(const T& key);
-};
-
 template <class T> class LinkedList
 {
-    private:
-    Node<T>* head;
-    Node<T>* tail;
-
-    size_t calculateLength() const;
-    Node<T>* getNode(size_t index) const;
-
     public:
+    struct Node
+    {
+        T key;
+        Node* next = nullptr;
+
+        Node() = default;
+        Node(const T& k) : key(k) {}
+    };
+
     LinkedList();
     LinkedList(T* items, size_t count);
     LinkedList(const LinkedList<T>& list);
@@ -43,6 +35,13 @@ template <class T> class LinkedList
     void InsertAt(const T& item, size_t index);
     LinkedList<T>* Concat(LinkedList<T>* list) const;
     void ClearList();
+
+    private:
+    Node* head = nullptr;
+    Node* tail = nullptr;
+
+    size_t calculateLength() const;
+    Node* getNode(size_t index) const;
 };
 
 #include "LinkedList.tpp"

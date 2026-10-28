@@ -63,14 +63,14 @@ CMAKE_BINARY_DIR = /Users/polzovatel/Desktop/lab1/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/gui_main.dir/all
 all: CMakeFiles/console_main.dir/all
+all: CMakeFiles/benchmark.dir/all
 all: CMakeFiles/tests.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
-codegen: CMakeFiles/gui_main.dir/codegen
 codegen: CMakeFiles/console_main.dir/codegen
+codegen: CMakeFiles/benchmark.dir/codegen
 codegen: CMakeFiles/tests.dir/codegen
 .PHONY : codegen
 
@@ -79,42 +79,10 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/gui_main.dir/clean
 clean: CMakeFiles/console_main.dir/clean
+clean: CMakeFiles/benchmark.dir/clean
 clean: CMakeFiles/tests.dir/clean
 .PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/gui_main.dir
-
-# All Build rule for target.
-CMakeFiles/gui_main.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=4,5,6 "Built target gui_main"
-.PHONY : CMakeFiles/gui_main.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/gui_main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/polzovatel/Desktop/lab1/build/CMakeFiles 3
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/gui_main.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/polzovatel/Desktop/lab1/build/CMakeFiles 0
-.PHONY : CMakeFiles/gui_main.dir/rule
-
-# Convenience name for target.
-gui_main: CMakeFiles/gui_main.dir/rule
-.PHONY : gui_main
-
-# codegen rule for target.
-CMakeFiles/gui_main.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=4,5,6 "Finished codegen for target gui_main"
-.PHONY : CMakeFiles/gui_main.dir/codegen
-
-# clean rule for target.
-CMakeFiles/gui_main.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/clean
-.PHONY : CMakeFiles/gui_main.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/console_main.dir
@@ -123,7 +91,7 @@ CMakeFiles/gui_main.dir/clean:
 CMakeFiles/console_main.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=1,2,3 "Built target console_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=4,5,6 "Built target console_main"
 .PHONY : CMakeFiles/console_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -140,13 +108,45 @@ console_main: CMakeFiles/console_main.dir/rule
 # codegen rule for target.
 CMakeFiles/console_main.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target console_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=4,5,6 "Finished codegen for target console_main"
 .PHONY : CMakeFiles/console_main.dir/codegen
 
 # clean rule for target.
 CMakeFiles/console_main.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/clean
 .PHONY : CMakeFiles/console_main.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/benchmark.dir
+
+# All Build rule for target.
+CMakeFiles/benchmark.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=1,2,3 "Built target benchmark"
+.PHONY : CMakeFiles/benchmark.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/benchmark.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/polzovatel/Desktop/lab1/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/benchmark.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/polzovatel/Desktop/lab1/build/CMakeFiles 0
+.PHONY : CMakeFiles/benchmark.dir/rule
+
+# Convenience name for target.
+benchmark: CMakeFiles/benchmark.dir/rule
+.PHONY : benchmark
+
+# codegen rule for target.
+CMakeFiles/benchmark.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/polzovatel/Desktop/lab1/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target benchmark"
+.PHONY : CMakeFiles/benchmark.dir/codegen
+
+# clean rule for target.
+CMakeFiles/benchmark.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/clean
+.PHONY : CMakeFiles/benchmark.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/tests.dir

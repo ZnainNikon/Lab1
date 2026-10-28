@@ -47,7 +47,6 @@ class TreeCanvas : public wxScrolledWindow
     void setTree(const BinaryTree<ValueType>& newTree)
     {
         tree = newTree;
-        updateVirtualSize();
         Refresh();
     }
 
@@ -63,87 +62,75 @@ class TreeCanvas : public wxScrolledWindow
     ValueType highlightedValue{};
     bool hasHighlight = false;
 
-    static constexpr int radius = 22;
-    static constexpr int levelHeight = 90;
-    static constexpr int minHorizontalGap = 70;
+    static constexpr int nodeRadius = 22;
+    static constexpr int levelHeight = 80;
+    static constexpr int hGap = 30; // зазор между соседними узлами
 
-    int nodeWidth(const typename BinaryTree<ValueType>::Node* node) const
+    // Вспомогательная структура для сохранения координат
+    struct PositionedNode
     {
-        wxClientDC dc(const_cast<TreeCanvas*>(this));
-        wxString text = valueToStr(node->value);
-        wxCoord w = 0, h = 0;
-        dc.GetTextExtent(text, &w, &h);
-        return std::max(2 * radius, w + 20);
+        const typename BinaryTree<ValueType>::Node* node;
+        int x;
+        int y;
+    };
+
+    // 1. Считаем, сколько места (ширины) нужно поддереву
+    int measureSubtree(const typename BinaryTree<ValueType>::Node* node)
+    {
+        if (!node) return 0;
+
+        int leftWidth = measureSubtree(node->left);
+        int rightWidth = measureSubtree(node->right);
+
+        // Если это лист, ему нужен только его собственный диаметр
+        int selfWidth = 2 * nodeRadius;
+
+        if (leftWidth == 0 && rightWidth == 0) 
+            return selfWidth;
+
+        // Ширина = ширина левого + правого + зазор
+        int childrenWidth = 0;
+        if (leftWidth > 0 && rightWidth > 0) 
+            childrenWidth = leftWidth + rightWidth + hGap;
+        else 
+            childrenWidth = std::max(leftWidth, rightWidth);
+
+        return std::max(selfWidth, childrenWidth);
     }
 
-    void updateVirtualSize()
-    {
-        int neededWidth = 0, neededHeight = 0;
-        measureSubtree(tree.getRoot(), 0, &neededWidth, &neededHeight);
-        if (neededWidth < 400) neededWidth = 400;
-        if (neededHeight < 300) neededHeight = 300;
-        SetVirtualSize(neededWidth, neededHeight);
-    }
-
-    void measureSubtree(const typename BinaryTree<ValueType>::Node* node,
-                        int depth, int* width, int* height)
-    {
-        if (!node) return;
-        int selfWidth = nodeWidth(node);
-        int localWidth = selfWidth;
-        if (node->left || node->right)
-        {
-            int leftW = 0, leftH = 0, rightW = 0, rightH = 0;
-            measureSubtree(node->left, depth + 1, &leftW, &leftH);
-            measureSubtree(node->right, depth + 1, &rightW, &rightH);
-            localWidth = std::max(selfWidth, leftW + rightW + minHorizontalGap);
-            *height = std::max(*height, std::max(leftH, rightH));
-        }
-        *width = std::max(*width, localWidth);
-        *height = std::max(*height, (depth + 1) * levelHeight);
-    }
-
-    void drawNode(wxDC& dc, const typename BinaryTree<ValueType>::Node* node,
-                  int centerX, int centerY)
+    // 2. Расставляем узлы, зная их точную ширину
+    void layoutSubtree(const typename BinaryTree<ValueType>::Node* node,
+                       int minX, int currentY,
+                       std::vector<PositionedNode>& out)
     {
         if (!node) return;
 
+        int width = measureSubtree(node);
+        int centerX = minX + width / 2;
+
+        out.push_back({node, centerX, currentY});
+
+        if (!node->left && !node->right) return;
+
+        int leftWidth = measureSubtree(node->left);
+        int rightWidth = measureSubtree(node->right);
+
+        // Расставляем левое поддерево слева
         if (node->left)
         {
-            int childWidth = nodeWidth(node->left);
-            int childX = centerX - childWidth / 2 - minHorizontalGap / 2;
-            int childY = centerY + levelHeight;
-            dc.SetPen(wxPen(wxColour(150, 150, 150), 1));
-            dc.DrawLine(centerX, centerY + radius, childX, childY - radius);
-            drawNode(dc, node->left, childX, childY);
+            layoutSubtree(node->left, minX, currentY + levelHeight, out);
         }
+
+        // Расставляем правое поддерево справа
         if (node->right)
         {
-            int childWidth = nodeWidth(node->right);
-            int childX = centerX + childWidth / 2 + minHorizontalGap / 2;
-            int childY = centerY + levelHeight;
-            dc.SetPen(wxPen(wxColour(150, 150, 150), 1));
-            dc.DrawLine(centerX, centerY + radius, childX, childY - radius);
-            drawNode(dc, node->right, childX, childY);
+            int rightStartX = minX + leftWidth + (node->left ? hGap : 0);
+            // Если левого нет, правое должно начинаться с середины
+            if (!node->left) 
+                rightStartX = centerX + hGap / 2; 
+                
+            layoutSubtree(node->right, rightStartX, currentY + levelHeight, out);
         }
-
-        bool isHighlighted = hasHighlight && (node->value == highlightedValue);
-        wxColour fillColor = isHighlighted ? wxColour(255, 220, 120) : wxColour(245, 245, 245);
-        wxColour borderColor = isHighlighted ? wxColour(200, 120, 0) : wxColour(70, 70, 70);
-
-        int width = nodeWidth(node);
-        int ellipseW = width;
-        int ellipseH = 2 * radius;
-
-        dc.SetPen(wxPen(borderColor, 2));
-        dc.SetBrush(wxBrush(fillColor));
-        dc.DrawEllipse(centerX - ellipseW / 2, centerY - ellipseH / 2, ellipseW, ellipseH);
-
-        wxString text = valueToStr(node->value);
-        wxCoord textWidth = 0, textHeight = 0;
-        dc.GetTextExtent(text, &textWidth, &textHeight);
-        dc.SetTextForeground(*wxBLACK);
-        dc.DrawText(text, centerX - textWidth / 2, centerY - textHeight / 2);
     }
 
     void OnPaint(wxPaintEvent&)
@@ -153,13 +140,7 @@ class TreeCanvas : public wxScrolledWindow
         dc.SetBackground(wxBrush(*wxWHITE));
         dc.Clear();
 
-        if (tree.getRoot())
-        {
-            int virtualWidth = 0, virtualHeight = 0;
-            GetVirtualSize(&virtualWidth, &virtualHeight);
-            drawNode(dc, tree.getRoot(), virtualWidth / 2, 50);
-        }
-        else
+        if (!tree.getRoot())
         {
             dc.SetTextForeground(wxColour(150, 150, 150));
             dc.DrawText("Дерево пусто.\n\n"
@@ -167,6 +148,69 @@ class TreeCanvas : public wxScrolledWindow
                         "2. Нажмите «Вставить».\n"
                         "3. Используйте кнопки «Операции».",
                         40, 40);
+            return;
+        }
+
+        // 1. Вычисляем координаты
+        std::vector<PositionedNode> positions;
+        layoutSubtree(tree.getRoot(), 0, 50, positions);
+
+        // 2. Вычисляем общий размер для скролла
+        int maxX = 0;
+        int maxY = 0;
+        for (const auto& pos : positions)
+        {
+            if (pos.x > maxX) maxX = pos.x;
+            if (pos.y > maxY) maxY = pos.y;
+        }
+
+        // Добавляем отступы, чтобы дерево не прилипало к краям
+        SetVirtualSize(maxX + 100, maxY + 100);
+
+        // 3. Рисуем связи (линии)
+        dc.SetPen(wxPen(wxColour(130, 130, 130), 2));
+        for (const auto& pos : positions)
+        {
+            if (pos.node->left)
+            {
+                for (const auto& child : positions)
+                {
+                    if (child.node == pos.node->left)
+                    {
+                        dc.DrawLine(pos.x, pos.y + nodeRadius, child.x, child.y - nodeRadius);
+                        break;
+                    }
+                }
+            }
+            if (pos.node->right)
+            {
+                for (const auto& child : positions)
+                {
+                    if (child.node == pos.node->right)
+                    {
+                        dc.DrawLine(pos.x, pos.y + nodeRadius, child.x, child.y - nodeRadius);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 4. Рисуем сами узлы
+        for (const auto& pos : positions)
+        {
+            bool isHighlighted = hasHighlight && (pos.node->value == highlightedValue);
+            wxColour fillColor = isHighlighted ? wxColour(255, 220, 120) : wxColour(250, 250, 250);
+            wxColour borderColor = isHighlighted ? wxColour(200, 120, 0) : wxColour(70, 70, 70);
+
+            dc.SetPen(wxPen(borderColor, 2));
+            dc.SetBrush(wxBrush(fillColor));
+            dc.DrawCircle(pos.x, pos.y, nodeRadius);
+
+            wxString text = valueToStr(pos.node->value);
+            wxCoord textWidth, textHeight;
+            dc.GetTextExtent(text, &textWidth, &textHeight);
+            dc.SetTextForeground(*wxBLACK);
+            dc.DrawText(text, pos.x - textWidth / 2, pos.y - textHeight / 2);
         }
     }
 };

@@ -1633,12 +1633,12 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o
  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdarg.h
  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stddef.h
  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdint.h
+ /Users/polzovatel/Desktop/lab1/src/BinaryTree.hpp
+ /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp
  /Users/polzovatel/Desktop/lab1/src/LinkedList.hpp
  /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp
  /Users/polzovatel/Desktop/lab1/src/ListSequence.hpp
  /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp
- /Users/polzovatel/Desktop/lab1/src/NTree.hpp
- /Users/polzovatel/Desktop/lab1/src/NTree.tpp
  /Users/polzovatel/Desktop/lab1/src/Sequence.hpp
  /Users/polzovatel/Desktop/lab1/src/Sequence.tpp
 

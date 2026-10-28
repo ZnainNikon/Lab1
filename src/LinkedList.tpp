@@ -2,16 +2,10 @@
 #define LINKED_LIST_TPP
 
 template <class T>
-Node<T>::Node() {}
-
-template <class T>
-Node<T>::Node(const T& key) : key(key), next(nullptr) {}
-
-template <class T>
 size_t LinkedList<T>::calculateLength() const
 {
     size_t len = 0;
-    Node<T>* current = head;
+    Node* current = head;
     while (current != nullptr)
     {
         len++;
@@ -21,9 +15,9 @@ size_t LinkedList<T>::calculateLength() const
 }
 
 template <class T>
-Node<T>* LinkedList<T>::getNode(size_t index) const
+typename LinkedList<T>::Node* LinkedList<T>::getNode(size_t index) const
 {
-    Node<T>* current = head;
+    Node* current = head;
     for (size_t i = 0; i < index && current != nullptr; i++)
     {
         current = current->next;
@@ -46,7 +40,7 @@ LinkedList<T>::LinkedList(T* items, size_t count) : head(nullptr), tail(nullptr)
 template <class T>
 LinkedList<T>::LinkedList(const LinkedList<T>& list) : head(nullptr), tail(nullptr)
 {
-    Node<T>* current = list.head;
+    Node* current = list.head;
     while (current != nullptr)
     {
         Append(current->key);
@@ -92,7 +86,7 @@ T LinkedList<T>::GetLast() const
 template <class T>
 T LinkedList<T>::Get(size_t index) const
 {
-    Node<T>* node = getNode(index);
+    Node* node = getNode(index);
     if (node == nullptr)
     {
         throw IndexOutOfRangeException("Индекс выходит за границы");
@@ -108,7 +102,7 @@ LinkedList<T>* LinkedList<T>::GetSubList(size_t start, size_t end) const
     {
         throw IndexOutOfRangeException("Неверные начальный или конечный индексы");
     }
-    
+
     LinkedList<T>* result = new LinkedList<T>();
     for (size_t i = start; i <= end; i++)
     {
@@ -126,7 +120,7 @@ size_t LinkedList<T>::GetLength() const
 template <class T>
 void LinkedList<T>::Append(const T& item)
 {
-    Node<T>* newNode = new Node<T>(item);
+    Node* newNode = new Node(item);
     if (head == nullptr)
     {
         head = newNode;
@@ -142,7 +136,7 @@ void LinkedList<T>::Append(const T& item)
 template <class T>
 void LinkedList<T>::Prepend(const T& item)
 {
-    Node<T>* newNode = new Node<T>(item);
+    Node* newNode = new Node(item);
     if (head == nullptr)
     {
         head = newNode;
@@ -163,7 +157,7 @@ void LinkedList<T>::InsertAt(const T& item, size_t index)
     {
         throw IndexOutOfRangeException("Индекс выходит за границы");
     }
-    
+
     if (index == 0)
     {
         Prepend(item);
@@ -174,8 +168,8 @@ void LinkedList<T>::InsertAt(const T& item, size_t index)
     }
     else
     {
-        Node<T>* newNode = new Node<T>(item);
-        Node<T>* prev = getNode(index - 1);
+        Node* newNode = new Node(item);
+        Node* prev = getNode(index - 1);
         if (prev != nullptr)
         {
             newNode->next = prev->next;
@@ -191,9 +185,9 @@ LinkedList<T>* LinkedList<T>::Concat(LinkedList<T>* list) const
     {
         throw NullPointerException("Невозможно объединить с нулевым указателем");
     }
-    
+
     LinkedList<T>* result = new LinkedList<T>(*this);
-    Node<T>* current = list->head;
+    Node* current = list->head;
     while (current != nullptr)
     {
         result->Append(current->key);
@@ -205,10 +199,10 @@ LinkedList<T>* LinkedList<T>::Concat(LinkedList<T>* list) const
 template <class T>
 void LinkedList<T>::ClearList()
 {
-    Node<T>* current = head;
+    Node* current = head;
     while (current != nullptr)
     {
-        Node<T>* next = current->next;
+        Node* next = current->next;
         delete current;
         current = next;
     }

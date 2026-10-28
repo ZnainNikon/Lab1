@@ -1631,23 +1631,23 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o: /Users/polzovatel/Desktop/la
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdarg.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdint.h \
+  /Users/polzovatel/Desktop/lab1/src/BinaryTree.hpp \
+  /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp \
   /Users/polzovatel/Desktop/lab1/src/LinkedList.hpp \
   /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp \
   /Users/polzovatel/Desktop/lab1/src/ListSequence.hpp \
   /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp \
-  /Users/polzovatel/Desktop/lab1/src/NTree.hpp \
-  /Users/polzovatel/Desktop/lab1/src/NTree.tpp \
   /Users/polzovatel/Desktop/lab1/src/Sequence.hpp \
   /Users/polzovatel/Desktop/lab1/src/Sequence.tpp
 
-
-/Users/polzovatel/Desktop/lab1/src/NTree.hpp:
 
 /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp:
 
 /Users/polzovatel/Desktop/lab1/src/ListSequence.hpp:
 
 /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp:
+
+/Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream:
 
@@ -2661,6 +2661,8 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o: /Users/polzovatel/Desktop/la
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/incrementable_traits.h:
 
+/Users/polzovatel/Desktop/lab1/src/BinaryTree.hpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_primary_template.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__charconv/tables.h:
@@ -3012,8 +3014,6 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o: /Users/polzovatel/Desktop/la
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/reverse_copy.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_def.h:
-
-/Users/polzovatel/Desktop/lab1/src/NTree.tpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/partition_point.h:
 

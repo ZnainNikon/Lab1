@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/polzovatel/Desktop/lab1/src/Sequence.cpp" "CMakeFiles/gui_main.dir/src/Sequence.cpp.o" "gcc" "CMakeFiles/gui_main.dir/src/Sequence.cpp.o.d"
-  "/Users/polzovatel/Desktop/lab1/src/main.cpp" "CMakeFiles/gui_main.dir/src/main.cpp.o" "gcc" "CMakeFiles/gui_main.dir/src/main.cpp.o.d"
+  "/Users/polzovatel/Desktop/lab1/src/Sequence.cpp" "CMakeFiles/benchmark.dir/src/Sequence.cpp.o" "gcc" "CMakeFiles/benchmark.dir/src/Sequence.cpp.o.d"
+  "/Users/polzovatel/Desktop/lab1/src/benchmark.cpp" "CMakeFiles/benchmark.dir/src/benchmark.cpp.o" "gcc" "CMakeFiles/benchmark.dir/src/benchmark.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

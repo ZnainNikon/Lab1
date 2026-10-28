@@ -1,4 +1,4 @@
-CMakeFiles/gui_main.dir/src/Sequence.cpp.o: \
+CMakeFiles/benchmark.dir/src/Sequence.cpp.o: \
   /Users/polzovatel/Desktop/lab1/src/Sequence.cpp \
   /Users/polzovatel/Desktop/lab1/src/Sequence.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \

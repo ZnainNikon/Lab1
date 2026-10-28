@@ -11,32 +11,6 @@
 
 template <class T> class BinaryTree
 {
-    private:
-    Node* root = nullptr;
-    size_t sz = 0;
-
-    static Node* cloneNode(const Node* src);
-    static void destroy(Node* n);
-    static size_t countNodes(const Node* n);
-    static int heightOf(const Node* n);
-
-    static void preorderFill(const Node* n, ListSequence<T>& out);
-    static void postorderFill(const Node* n, ListSequence<T>& out);
-    static void inorderFill(const Node* n, ListSequence<T>& out);
-
-    static Node* findNode(Node* n, const T& v);
-    static const Node* findNode(const Node* n, const T& v);
-    static Node* minNode(Node* n);
-
-    Node* insertNode(Node* n, const T& v, bool& inserted);
-    Node* removeNode(Node* n, const T& v, bool& removed);
-
-    static bool sameStructure(const Node* a, const Node* b);
-
-    static void serialize(const Node* n, std::ostream& os);
-    static Node* deserialize(std::istream& is);
-
-
     public:
     using value_type = T;
 
@@ -85,6 +59,31 @@ template <class T> class BinaryTree
     size_t size() const { return sz; }
     int height() const { return heightOf(root); }
     const Node* getRoot() const { return root; }
+
+    private:
+    Node* root = nullptr;
+    size_t sz = 0;
+
+    static Node* cloneNode(const Node* src);
+    static void destroy(Node* n);
+    static size_t countNodes(const Node* n);
+    static int heightOf(const Node* n);
+
+    static void preorderFill(const Node* n, ListSequence<T>& out);
+    static void postorderFill(const Node* n, ListSequence<T>& out);
+    static void inorderFill(const Node* n, ListSequence<T>& out);
+
+    static Node* findNode(Node* n, const T& v);
+    static const Node* findNode(const Node* n, const T& v);
+    static Node* minNode(Node* n);
+
+    Node* insertNode(Node* n, const T& v, bool& inserted);
+    Node* removeNode(Node* n, const T& v, bool& removed);
+
+    static bool sameStructure(const Node* a, const Node* b);
+
+    static void serialize(const Node* n, std::ostream& os);
+    static Node* deserialize(std::istream& is);
 };
 
 #include "BinaryTree.tpp"

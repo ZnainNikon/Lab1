@@ -127,19 +127,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named gui_main
-
-# Build rule for target.
-gui_main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gui_main
-.PHONY : gui_main
-
-# fast build rule for target.
-gui_main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/build
-.PHONY : gui_main/fast
-
-#=============================================================================
 # Target rules for targets named console_main
 
 # Build rule for target.
@@ -151,6 +138,19 @@ console_main: cmake_check_build_system
 console_main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/build
 .PHONY : console_main/fast
+
+#=============================================================================
+# Target rules for targets named benchmark
+
+# Build rule for target.
+benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark
+.PHONY : benchmark
+
+# fast build rule for target.
+benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/build
+.PHONY : benchmark/fast
 
 #=============================================================================
 # Target rules for targets named tests
@@ -170,8 +170,8 @@ src/Sequence.o: src/Sequence.cpp.o
 
 # target to build an object file
 src/Sequence.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/Sequence.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.o
 .PHONY : src/Sequence.cpp.o
 
@@ -180,8 +180,8 @@ src/Sequence.i: src/Sequence.cpp.i
 
 # target to preprocess a source file
 src/Sequence.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/Sequence.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.i
 .PHONY : src/Sequence.cpp.i
 
@@ -190,10 +190,34 @@ src/Sequence.s: src/Sequence.cpp.s
 
 # target to generate assembly for a file
 src/Sequence.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/Sequence.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.s
 .PHONY : src/Sequence.cpp.s
+
+src/benchmark.o: src/benchmark.cpp.o
+.PHONY : src/benchmark.o
+
+# target to build an object file
+src/benchmark.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/benchmark.cpp.o
+.PHONY : src/benchmark.cpp.o
+
+src/benchmark.i: src/benchmark.cpp.i
+.PHONY : src/benchmark.i
+
+# target to preprocess a source file
+src/benchmark.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/benchmark.cpp.i
+.PHONY : src/benchmark.cpp.i
+
+src/benchmark.s: src/benchmark.cpp.s
+.PHONY : src/benchmark.s
+
+# target to generate assembly for a file
+src/benchmark.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/benchmark.cpp.s
+.PHONY : src/benchmark.cpp.s
 
 src/console_main.o: src/console_main.cpp.o
 .PHONY : src/console_main.o
@@ -218,30 +242,6 @@ src/console_main.s: src/console_main.cpp.s
 src/console_main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/console_main.cpp.s
 .PHONY : src/console_main.cpp.s
-
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
-
-# target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
-
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
-
-# target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
-
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
-
-# target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gui_main.dir/build.make CMakeFiles/gui_main.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
 
 src/tests.o: src/tests.cpp.o
 .PHONY : src/tests.o
@@ -276,18 +276,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... benchmark"
 	@echo "... console_main"
-	@echo "... gui_main"
 	@echo "... tests"
 	@echo "... src/Sequence.o"
 	@echo "... src/Sequence.i"
 	@echo "... src/Sequence.s"
+	@echo "... src/benchmark.o"
+	@echo "... src/benchmark.i"
+	@echo "... src/benchmark.s"
 	@echo "... src/console_main.o"
 	@echo "... src/console_main.i"
 	@echo "... src/console_main.s"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
 	@echo "... src/tests.o"
 	@echo "... src/tests.i"
 	@echo "... src/tests.s"
