@@ -2,12 +2,12 @@
 #define BINARY_TREE_HPP
 
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <sstream>
 #include <algorithm>
-
-#include "ListSequence.hpp"
+#include "array.hpp"
 
 template <class T> class BinaryTree
 {
@@ -17,31 +17,32 @@ template <class T> class BinaryTree
     struct Node
     {
         T value;
-        Node* left = nullptr;
-        Node* right = nullptr;
-
+        std::unique_ptr<Node> left = nullptr;
+        std::unique_ptr<Node> right = nullptr;
         explicit Node(const T& v) : value(v) {}
     };
 
     BinaryTree() = default;
     BinaryTree(const BinaryTree& other);
     BinaryTree& operator=(const BinaryTree& other);
-    BinaryTree(BinaryTree&& other) noexcept;
-    BinaryTree& operator=(BinaryTree&& other) noexcept;
-    ~BinaryTree();
+    BinaryTree(BinaryTree&& other) noexcept = default;
+    BinaryTree& operator=(BinaryTree&& other) noexcept = default;
+    ~BinaryTree() = default;
 
     void insert(const T& value);
     bool contains(const T& value) const;
     void remove(const T& value);
     void clear();
 
-    void preorder(ListSequence<T>& out) const;
-    void postorder(ListSequence<T>& out) const;
-    void inorder(ListSequence<T>& out) const;
-    void levelOrder(ListSequence<T>& out) const;
+    void preorder(std::function<void(const T&)> visitor) const;
+    void postorder(std::function<void(const T&)> visitor) const;
+    void inorder(std::function<void(const T&)> visitor) const;
+    void levelOrder(std::function<void(const T&)> visitor) const;
 
     template <class R, class F>
     BinaryTree<R> map(F f) const;
+
+    BinaryTree<T> where(std::function<bool(const T&)> predicate) const;
 
     template <class R>
     R reduce(std::function<R(const T&, R)> f, R start) const;
@@ -58,32 +59,27 @@ template <class T> class BinaryTree
     bool empty() const { return root == nullptr; }
     size_t size() const { return sz; }
     int height() const { return heightOf(root); }
-    const Node* getRoot() const { return root; }
+    const std::unique_ptr<Node>& getRoot() const { return root; }
 
     private:
-    Node* root = nullptr;
+    std::unique_ptr<Node> root = nullptr;
     size_t sz = 0;
 
-    static Node* cloneNode(const Node* src);
-    static void destroy(Node* n);
-    static size_t countNodes(const Node* n);
-    static int heightOf(const Node* n);
+    static std::unique_ptr<Node> cloneNode(const std::unique_ptr<Node>& src);
+    static int heightOf(const std::unique_ptr<Node>& n);
 
-    static void preorderFill(const Node* n, ListSequence<T>& out);
-    static void postorderFill(const Node* n, ListSequence<T>& out);
-    static void inorderFill(const Node* n, ListSequence<T>& out);
+    static void preorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
+    static void postorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
+    static void inorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
 
-    static Node* findNode(Node* n, const T& v);
-    static const Node* findNode(const Node* n, const T& v);
-    static Node* minNode(Node* n);
+    static bool findNode(const std::unique_ptr<Node>& n, const T& v, const Node** outNode);
 
-    Node* insertNode(Node* n, const T& v, bool& inserted);
-    Node* removeNode(Node* n, const T& v, bool& removed);
+    std::unique_ptr<Node> insertNode(std::unique_ptr<Node> n, const T& v, bool& inserted);
+    std::unique_ptr<Node> removeNode(std::unique_ptr<Node> n, const T& v, bool& removed);
 
-    static bool sameStructure(const Node* a, const Node* b);
-
-    static void serialize(const Node* n, std::ostream& os);
-    static Node* deserialize(std::istream& is);
+    static bool sameStructure(const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b);
+    static void serialize(const std::unique_ptr<Node>& n, std::ostream& os);
+    static std::unique_ptr<Node> deserialize(std::istream& is);
 };
 
 #include "BinaryTree.tpp"

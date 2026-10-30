@@ -1,7 +1,5 @@
 #include "BinaryTree.hpp"
-#include "Sequence.hpp"
-#include "ListSequence.hpp"
-
+#include "array.hpp"
 #include <cctype>
 #include <iostream>
 #include <limits>
@@ -57,20 +55,6 @@ std::string valueForTree(const T& value)
 }
 
 template <typename T>
-void printSequence(const std::string& name, ListSequence<T>& sequence)
-{
-    std::cout << name << ": ";
-    size_t length = sequence.GetLength();
-    if (length == 0) std::cout << "(пусто)";
-    for (size_t i = 0; i < length; i++)
-    {
-        printValue(sequence.Get(i));
-        if (i + 1 < length) std::cout << " ";
-    }
-    std::cout << "\n";
-}
-
-template <typename T>
 bool parseValue(const std::string& text, T& parsed)
 {
     if (text.empty()) return false;
@@ -81,23 +65,41 @@ bool parseValue(const std::string& text, T& parsed)
 }
 
 
-
-struct PosNode
+template <typename T>
+void printTraversal(const std::string& name, const BinaryTree<T>& tree, int type)
 {
-    const void* nodePtr;
-    int x;
-    int y;
-};
+    std::cout << name << ": ";
+    bool isEmpty = true;
+    auto printer = [&](const T& value) {
+        std::cout << value << " ";
+        isEmpty = false;
+    };
+
+    if (type == 1) tree.preorder(printer);
+    else if (type == 2) tree.inorder(printer);
+    else if (type == 3) tree.postorder(printer);
+    else if (type == 4) tree.levelOrder(printer);
+
+    if (isEmpty) std::cout << "(пусто)";
+    std::cout << "\n";
+}
+
 
 template <typename T>
-void printTree(BinaryTree<T>& tree)
+void printTree(const BinaryTree<T>& tree)
 {
     if (tree.empty()) {
         std::cout << "(дерево пусто)\n";
         return;
     }
 
-    ListSequence<PosNode> nodes;
+    struct PosNode {
+        const typename BinaryTree<T>::Node* node;
+        int x;
+        int y;
+    };
+
+    MyVector<PosNode> nodes; 
     int maxWidth = 0;
     int maxHeight = 0;
 
@@ -106,39 +108,35 @@ void printTree(BinaryTree<T>& tree)
         std::string text = valueForTree(n->value);
         int textWidth = text.length();
         
-        nodes.Append({n, x, y});
+        nodes.push_back({n, x, y});
         if (x + textWidth > maxWidth) maxWidth = x + textWidth;
         if (y > maxHeight) maxHeight = y;
         
         int shift = textWidth + 2;
-        if (n->left) self(self, n->left, x - shift, y + 1);
-        if (n->right) self(self, n->right, x + shift, y + 1);
+        if (n->left) self(self, n->left.get(), x - shift, y + 1);
+        if (n->right) self(self, n->right.get(), x + shift, y + 1);
     };
 
-    calcPos(calcPos, tree.getRoot(), 80, 0);
+    calcPos(calcPos, tree.getRoot().get(), 80, 0);
 
     int rows = maxHeight * 2 + 1;
     int cols = maxWidth + 40;
     
-    // Двумерный массив символов (сырой, не STL)
     char** canvas = new char*[rows];
     for (int r = 0; r < rows; r++) {
         canvas[r] = new char[cols];
         for (int c = 0; c < cols; c++) canvas[r][c] = ' ';
     }
 
-    // Рисуем линии
-    for (size_t i = 0; i < nodes.GetLength(); i++) {
-        PosNode pos = nodes.Get(i);
-        const typename BinaryTree<T>::Node* node = static_cast<const typename BinaryTree<T>::Node*>(pos.nodePtr);
-
-        if (node->left) {
+    for (size_t i = 0; i < nodes.size(); i++) {
+        const auto& pos = nodes[i];
+        if (pos.node->left) {
             int startX = pos.x - 1; 
             int startY = pos.y * 2 + 1;
-            for (size_t j = 0; j < nodes.GetLength(); j++) {
-                PosNode childPos = nodes.Get(j);
-                if (childPos.nodePtr == node->left) {
-                    int endX = childPos.x + valueForTree(node->left->value).length() / 2;
+            for (size_t j = 0; j < nodes.size(); j++) {
+                const auto& childPos = nodes[j];
+                if (childPos.node == pos.node->left.get()) {
+                    int endX = childPos.x + valueForTree(childPos.node->value).length() / 2;
                     int endY = childPos.y * 2;
                     for (int k = 0; k < 10; k++) {
                         int cx = startX - (startX - endX) * k / 10;
@@ -150,13 +148,13 @@ void printTree(BinaryTree<T>& tree)
                 }
             }
         }
-        if (node->right) {
-            int startX = pos.x + valueForTree(node->value).length();
+        if (pos.node->right) {
+            int startX = pos.x + valueForTree(pos.node->value).length();
             int startY = pos.y * 2 + 1;
-            for (size_t j = 0; j < nodes.GetLength(); j++) {
-                PosNode childPos = nodes.Get(j);
-                if (childPos.nodePtr == node->right) {
-                    int endX = childPos.x + valueForTree(node->right->value).length() / 2;
+            for (size_t j = 0; j < nodes.size(); j++) {
+                const auto& childPos = nodes[j];
+                if (childPos.node == pos.node->right.get()) {
+                    int endX = childPos.x + valueForTree(childPos.node->value).length() / 2;
                     int endY = childPos.y * 2;
                     for (int k = 0; k < 10; k++) {
                         int cx = startX + (endX - startX) * k / 10;
@@ -170,10 +168,9 @@ void printTree(BinaryTree<T>& tree)
         }
     }
 
-    for (size_t i = 0; i < nodes.GetLength(); i++) {
-        PosNode pos = nodes.Get(i);
-        const typename BinaryTree<T>::Node* node = static_cast<const typename BinaryTree<T>::Node*>(pos.nodePtr);
-        std::string text = valueForTree(node->value);
+    for (size_t i = 0; i < nodes.size(); i++) {
+        const auto& pos = nodes[i];
+        std::string text = valueForTree(pos.node->value);
         int startX = pos.x - text.length() / 2;
         int y = pos.y * 2;
         for (size_t k = 0; k < text.length(); k++) {
@@ -202,12 +199,9 @@ void printTree(BinaryTree<T>& tree)
     std::cout << "\n";
 
     // Очистка памяти
-    for (int r = 0; r < rows; r++) {
-        delete[] canvas[r];
-    }
+    for (int r = 0; r < rows; r++) delete[] canvas[r];
     delete[] canvas;
 }
-
 
 
 void printMenu(const char* typeName, size_t size)
@@ -226,6 +220,7 @@ void printMenu(const char* typeName, size_t size)
     std::cout << "10. Очистить дерево\n";
     std::cout << " 0. Выход\n";
 }
+
 
 template <typename T>
 void handleInsert(BinaryTree<T>& tree)
@@ -281,14 +276,10 @@ void handleRemove(BinaryTree<T>& tree)
 template <typename T>
 void handleTraversals(BinaryTree<T>& tree)
 {
-    ListSequence<T> pre; tree.preorder(pre);
-    printSequence("Preorder ", pre);
-    ListSequence<T> in; tree.inorder(in);
-    printSequence("Inorder  ", in);
-    ListSequence<T> post; tree.postorder(post);
-    printSequence("Postorder", post);
-    ListSequence<T> level; tree.levelOrder(level);
-    printSequence("Level    ", level);
+    printTraversal("Preorder ", tree, 1);
+    printTraversal("Inorder  ", tree, 2);
+    printTraversal("Postorder", tree, 3);
+    printTraversal("Level    ", tree, 4);
 }
 
 template <typename T>
@@ -308,10 +299,12 @@ void handleExtractSubtree(BinaryTree<T>& tree)
     T value{};
     if (!parseValue<T>(text, value)) { std::cout << "Некорректное значение.\n"; return; }
     if (!tree.contains(value)) { std::cout << "Такого узла нет.\n"; return; }
+    
     BinaryTree<T> subtree = tree.extractSubtree(value);
     std::cout << "Поддерево: узлов " << subtree.size() << "\n";
-    ListSequence<T> values; subtree.preorder(values);
-    printSequence("Preorder ", values);
+    std::cout << "Preorder: ";
+    subtree.preorder([](const T& v) { std::cout << v << " "; });
+    std::cout << "\n";
 }
 
 template <typename T>

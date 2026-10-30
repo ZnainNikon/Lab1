@@ -2,69 +2,33 @@
 #define BINARY_TREE_TPP
 
 template <class T>
-int BinaryTree<T>::heightOf(const Node* n)
+int BinaryTree<T>::heightOf(const std::unique_ptr<Node>& n)
 {
     if (!n) return 0;
     int leftH = heightOf(n->left);
     int rightH = heightOf(n->right);
-    return 1 + (leftH > rightH ? leftH : rightH);
+    return 1 + std::max(leftH, rightH);
 }
 
 template <class T>
-typename BinaryTree<T>::Node* BinaryTree<T>::cloneNode(const Node* src)
+std::unique_ptr<typename BinaryTree<T>::Node> 
+BinaryTree<T>::cloneNode(const std::unique_ptr<Node>& src)
 {
     if (!src) return nullptr;
-    Node* copy = new Node(src->value);
+    auto copy = std::make_unique<Node>(src->value);
     copy->left = cloneNode(src->left);
     copy->right = cloneNode(src->right);
     return copy;
 }
 
 template <class T>
-void BinaryTree<T>::destroy(Node* n)
+bool BinaryTree<T>::findNode(const std::unique_ptr<Node>& n, const T& v, const Node** outNode)
 {
-    if (!n) return;
-    destroy(n->left);
-    destroy(n->right);
-    delete n;
-}
-
-template <class T>
-size_t BinaryTree<T>::countNodes(const Node* n)
-{
-    if (!n) return 0;
-    return 1 + countNodes(n->left) + countNodes(n->right);
-}
-
-template <class T>
-typename BinaryTree<T>::Node* BinaryTree<T>::findNode(Node* n, const T& v)
-{
-    while (n)
-    {
-        if (v < n->value) n = n->left;
-        else if (n->value < v) n = n->right;
-        else return n;
-    }
-    return nullptr;
-}
-
-template <class T>
-const typename BinaryTree<T>::Node* BinaryTree<T>::findNode(const Node* n, const T& v)
-{
-    while (n)
-    {
-        if (v < n->value) n = n->left;
-        else if (n->value < v) n = n->right;
-        else return n;
-    }
-    return nullptr;
-}
-
-template <class T>
-typename BinaryTree<T>::Node* BinaryTree<T>::minNode(Node* n)
-{
-    while (n && n->left) n = n->left;
-    return n;
+    if (!n) return false;
+    if (v < n->value) return findNode(n->left, v, outNode);
+    if (n->value < v) return findNode(n->right, v, outNode);
+    if (outNode) *outNode = n.get();
+    return true;
 }
 
 template <class T>
@@ -76,7 +40,6 @@ BinaryTree<T>& BinaryTree<T>::operator=(const BinaryTree& other)
 {
     if (this != &other)
     {
-        clear();
         root = cloneNode(other.root);
         sz = other.sz;
     }
@@ -84,47 +47,21 @@ BinaryTree<T>& BinaryTree<T>::operator=(const BinaryTree& other)
 }
 
 template <class T>
-BinaryTree<T>::BinaryTree(BinaryTree&& other) noexcept
-    : root(other.root), sz(other.sz)
-{
-    other.root = nullptr;
-    other.sz = 0;
-}
-
-template <class T>
-BinaryTree<T>& BinaryTree<T>::operator=(BinaryTree&& other) noexcept
-{
-    if (this != &other)
-    {
-        clear();
-        root = other.root;
-        sz = other.sz;
-        other.root = nullptr;
-        other.sz = 0;
-    }
-    return *this;
-}
-
-template <class T>
-BinaryTree<T>::~BinaryTree() { clear(); }
-
-template <class T>
-typename BinaryTree<T>::Node*
-BinaryTree<T>::insertNode(Node* n, const T& v, bool& inserted)
+std::unique_ptr<typename BinaryTree<T>::Node>
+BinaryTree<T>::insertNode(std::unique_ptr<Node> n, const T& v, bool& inserted)
 {
     if (!n)
     {
         inserted = true;
-        return new Node(v);
+        return std::make_unique<Node>(v);
     }
-
     if (v < n->value)
     {
-        n->left = insertNode(n->left, v, inserted);
+        n->left = insertNode(std::move(n->left), v, inserted);
     }
     else if (n->value < v)
     {
-        n->right = insertNode(n->right, v, inserted);
+        n->right = insertNode(std::move(n->right), v, inserted);
     }
     else
     {
@@ -134,163 +71,123 @@ BinaryTree<T>::insertNode(Node* n, const T& v, bool& inserted)
 }
 
 template <class T>
-typename BinaryTree<T>::Node*
-BinaryTree<T>::removeNode(Node* n, const T& v, bool& removed)
+std::unique_ptr<typename BinaryTree<T>::Node>
+BinaryTree<T>::removeNode(std::unique_ptr<Node> n, const T& v, bool& removed)
 {
     if (!n) return nullptr;
 
     if (v < n->value)
     {
-        n->left = removeNode(n->left, v, removed);
+        n->left = removeNode(std::move(n->left), v, removed);
     }
     else if (n->value < v)
     {
-        n->right = removeNode(n->right, v, removed);
+        n->right = removeNode(std::move(n->right), v, removed);
     }
     else
     {
-        if (!n->left && !n->right)
-        {
-            delete n;
-            removed = true;
-            return nullptr;
-        }
-        if (!n->left)
-        {
-            Node* right = n->right;
-            delete n;
-            removed = true;
-            return right;
-        }
-        if (!n->right)
-        {
-            Node* left = n->left;
-            delete n;
-            removed = true;
-            return left;
-        }
-        Node* successor = minNode(n->right);
+        removed = true;
+        if (!n->left) return std::move(n->right);
+        if (!n->right) return std::move(n->left);
+        
+        Node* successor = n->right.get();
+        while (successor->left) successor = successor->left.get();
         n->value = successor->value;
-        n->right = removeNode(n->right, successor->value, removed);
-        return n;
+        n->right = removeNode(std::move(n->right), successor->value, removed);
     }
     return n;
 }
 
 template <class T>
-void BinaryTree<T>::preorderFill(const Node* n, ListSequence<T>& out)
+void BinaryTree<T>::preorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor)
 {
     if (!n) return;
-    out.Append(n->value);
-    preorderFill(n->left, out);
-    preorderFill(n->right, out);
+    visitor(n->value);
+    preorderFill(n->left, visitor);
+    preorderFill(n->right, visitor);
 }
 
 template <class T>
-void BinaryTree<T>::postorderFill(const Node* n, ListSequence<T>& out)
+void BinaryTree<T>::postorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor)
 {
     if (!n) return;
-    postorderFill(n->left, out);
-    postorderFill(n->right, out);
-    out.Append(n->value);
+    postorderFill(n->left, visitor);
+    postorderFill(n->right, visitor);
+    visitor(n->value);
 }
 
 template <class T>
-void BinaryTree<T>::inorderFill(const Node* n, ListSequence<T>& out)
+void BinaryTree<T>::inorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor)
 {
     if (!n) return;
-    inorderFill(n->left, out);
-    out.Append(n->value);
-    inorderFill(n->right, out);
+    inorderFill(n->left, visitor);
+    visitor(n->value);
+    inorderFill(n->right, visitor);
 }
 
 template <class T>
 void BinaryTree<T>::insert(const T& value)
 {
     bool inserted = false;
-    root = insertNode(root, value, inserted);
+    root = insertNode(std::move(root), value, inserted);
     if (inserted) sz++;
 }
 
 template <class T>
 bool BinaryTree<T>::contains(const T& value) const
 {
-    return findNode(root, value) != nullptr;
+    return findNode(root, value, nullptr);
 }
 
 template <class T>
 void BinaryTree<T>::remove(const T& value)
 {
     bool removed = false;
-    root = removeNode(root, value, removed);
+    root = removeNode(std::move(root), value, removed);
     if (removed) sz--;
 }
 
 template <class T>
 void BinaryTree<T>::clear()
 {
-    destroy(root);
-    root = nullptr;
+    root.reset();
     sz = 0;
 }
 
 template <class T>
-void BinaryTree<T>::preorder(ListSequence<T>& out) const
+void BinaryTree<T>::preorder(std::function<void(const T&)> visitor) const
 {
-    preorderFill(root, out);
+    preorderFill(root, visitor);
 }
 
 template <class T>
-void BinaryTree<T>::postorder(ListSequence<T>& out) const
+void BinaryTree<T>::postorder(std::function<void(const T&)> visitor) const
 {
-    postorderFill(root, out);
+    postorderFill(root, visitor);
 }
 
 template <class T>
-void BinaryTree<T>::inorder(ListSequence<T>& out) const
+void BinaryTree<T>::inorder(std::function<void(const T&)> visitor) const
 {
-    inorderFill(root, out);
+    inorderFill(root, visitor);
 }
 
 template <class T>
-void BinaryTree<T>::levelOrder(ListSequence<T>& out) const
+void BinaryTree<T>::levelOrder(std::function<void(const T&)> visitor) const
 {
     if (!root) return;
-    size_t head = 0, tail = 0, capacity = 16;
-    const Node** queue = new const Node*[capacity];
-    queue[tail++] = root;
+    
+    MyVector<const Node*> queue;
+    queue.push_back(root.get());
 
-    while (head < tail)
+    size_t head = 0;
+    while (head < queue.size())
     {
         const Node* current = queue[head++];
-        out.Append(current->value);
-
-        if (current->left)
-        {
-            if (tail == capacity)
-            {
-                capacity *= 2;
-                const Node** bigger = new const Node*[capacity];
-                for (size_t j = 0; j < tail; j++) bigger[j] = queue[j];
-                delete[] queue;
-                queue = bigger;
-            }
-            queue[tail++] = current->left;
-        }
-        if (current->right)
-        {
-            if (tail == capacity)
-            {
-                capacity *= 2;
-                const Node** bigger = new const Node*[capacity];
-                for (size_t j = 0; j < tail; j++) bigger[j] = queue[j];
-                delete[] queue;
-                queue = bigger;
-            }
-            queue[tail++] = current->right;
-        }
+        visitor(current->value);
+        if (current->left) queue.push_back(current->left.get());
+        if (current->right) queue.push_back(current->right.get());
     }
-    delete[] queue;
 }
 
 template <class T>
@@ -298,10 +195,19 @@ template <class R, class F>
 BinaryTree<R> BinaryTree<T>::map(F f) const
 {
     BinaryTree<R> result;
-    ListSequence<T> values;
-    preorder(values);
-    for (size_t i = 0; i < values.GetLength(); i++)
-        result.insert(f(values.Get(i)));
+    preorder([&](const T& value) { result.insert(f(value)); });
+    return result;
+}
+
+template <class T>
+BinaryTree<T> BinaryTree<T>::where(std::function<bool(const T&)> predicate) const
+{
+    BinaryTree<T> result;
+    preorder([&](const T& value) {
+        if (predicate(value)) {
+            result.insert(value);
+        }
+    });
     return result;
 }
 
@@ -310,43 +216,52 @@ template <class R>
 R BinaryTree<T>::reduce(std::function<R(const T&, R)> f, R start) const
 {
     R accumulator = start;
-    ListSequence<T> values;
-    preorder(values);
-    for (size_t i = 0; i < values.GetLength(); i++)
-        accumulator = f(values.Get(i), accumulator);
+    preorder([&](const T& value) { accumulator = f(value, accumulator); });
     return accumulator;
 }
 
 template <class T>
 BinaryTree<T> BinaryTree<T>::extractSubtree(const T& rootValue) const
 {
-    const Node* found = findNode(root, rootValue);
-    if (!found) throw std::out_of_range("extractSubtree: element not found");
-
+    const Node* found = nullptr;
+    if (!findNode(root, rootValue, &found)) 
+        throw std::out_of_range("extractSubtree: element not found");
+    
     BinaryTree<T> result;
-    result.root = cloneNode(found);
-    result.sz = countNodes(result.root);
+    
+    std::function<std::unique_ptr<Node>(const Node*)> cloneFromPtr = 
+        [&](const Node* n) -> std::unique_ptr<Node> {
+            if (!n) return nullptr;
+            auto copy = std::make_unique<Node>(n->value);
+            copy->left = cloneFromPtr(n->left.get());
+            copy->right = cloneFromPtr(n->right.get());
+            return copy;
+        };
+    result.root = cloneFromPtr(found);
+    
+    std::function<size_t(const Node*)> count = [&](const Node* n) -> size_t {
+        return n ? 1 + count(n->left.get()) + count(n->right.get()) : 0;
+    };
+    result.sz = count(result.root.get());
     return result;
 }
 
 template <class T>
-bool BinaryTree<T>::sameStructure(const Node* a, const Node* b)
+bool BinaryTree<T>::sameStructure(const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b)
 {
     if (!a && !b) return true;
     if (!a || !b) return false;
     if (!(a->value == b->value)) return false;
-    return sameStructure(a->left, b->left)
-        && sameStructure(a->right, b->right);
+    return sameStructure(a->left, b->left) && sameStructure(a->right, b->right);
 }
 
 template <class T>
 bool BinaryTree<T>::containsSubtree(const BinaryTree<T>& other) const
 {
     if (other.empty()) return true;
-
-    std::function<bool(const Node*, const Node*)> find =
-        [&](const Node* n, const Node* target) -> bool
-        {
+    
+    std::function<bool(const std::unique_ptr<Node>&, const std::unique_ptr<Node>&)> find =
+        [&](const std::unique_ptr<Node>& n, const std::unique_ptr<Node>& target) -> bool {
             if (!n) return false;
             if (sameStructure(n, target)) return true;
             return find(n->left, target) || find(n->right, target);
@@ -358,32 +273,31 @@ template <class T>
 bool BinaryTree<T>::findByPath(const std::string& path, T& out) const
 {
     if (!root) return false;
-
-    ListSequence<T> parts;
     std::istringstream reader(path);
     std::string token;
+    const Node* current = root.get();
+    bool first = true;
+    
     while (std::getline(reader, token, '.'))
     {
         if (token.empty()) continue;
         T value{};
         std::istringstream tokenReader(token);
         if (!(tokenReader >> value)) return false;
-        parts.Append(value);
+        
+        if (first)
+        {
+            if (!(current->value == value)) return false;
+            first = false;
+        }
+        else
+        {
+            if (current->left && current->left->value == value) current = current->left.get();
+            else if (current->right && current->right->value == value) current = current->right.get();
+            else return false;
+        }
     }
-    if (parts.GetLength() == 0) return false;
-    if (!(root->value == parts.Get(0))) return false;
-
-    const Node* current = root;
-    for (size_t i = 1; i < parts.GetLength(); i++)
-    {
-        const Node* next = nullptr;
-        if (current->left && current->left->value == parts.Get(i))
-            next = current->left;
-        else if (current->right && current->right->value == parts.Get(i))
-            next = current->right;
-        if (!next) return false;
-        current = next;
-    }
+    if (first) return false;
     out = current->value;
     return true;
 }
@@ -395,15 +309,10 @@ bool BinaryTree<T>::findByRelativePath(const std::string& pathFromRoot, T& out) 
 }
 
 template <class T>
-void BinaryTree<T>::serialize(const Node* n, std::ostream& os)
+void BinaryTree<T>::serialize(const std::unique_ptr<Node>& n, std::ostream& os)
 {
-    if (!n)
-    {
-        os << "()";
-        return;
-    }
-    os << '(' << n->value;
-    os << ' ';
+    if (!n) { os << "()"; return; }
+    os << '(' << n->value << ' ';
     serialize(n->left, os);
     os << ' ';
     serialize(n->right, os);
@@ -411,32 +320,23 @@ void BinaryTree<T>::serialize(const Node* n, std::ostream& os)
 }
 
 template <class T>
-typename BinaryTree<T>::Node*
-BinaryTree<T>::deserialize(std::istream& is)
+std::unique_ptr<typename BinaryTree<T>::Node> BinaryTree<T>::deserialize(std::istream& is)
 {
-    char c = 0;
-    is >> c;
-    if (c != '(')
-        throw std::invalid_argument("deserialize: expected '('");
-
+    char c = 0; is >> c;
+    if (c != '(') throw std::invalid_argument("deserialize: expected '('");
     is >> std::ws;
-    if (is.peek() == ')')
-    {
-        is.get();
-        return nullptr;
-    }
-
+    
+    if (is.peek() == ')') { is.get(); return nullptr; }
+    
     T value;
-    if (!(is >> value))
-        throw std::invalid_argument("deserialize: cannot read value");
-
-    Node* node = new Node(value);
+    if (!(is >> value)) throw std::invalid_argument("deserialize: cannot read value");
+    
+    auto node = std::make_unique<Node>(value);
     node->left = deserialize(is);
     node->right = deserialize(is);
-
+    
     is >> std::ws;
-    if (is.peek() != ')')
-        throw std::invalid_argument("deserialize: expected ')'");
+    if (is.peek() != ')') throw std::invalid_argument("deserialize: expected ')'");
     is.get();
     return node;
 }
@@ -455,7 +355,11 @@ BinaryTree<T> BinaryTree<T>::loadFromString(const std::string& s)
     std::istringstream iss(s);
     BinaryTree<T> result;
     result.root = deserialize(iss);
-    result.sz = countNodes(result.root);
+    
+    std::function<size_t(const Node*)> count = [&](const Node* n) -> size_t {
+        return n ? 1 + count(n->left.get()) + count(n->right.get()) : 0;
+    };
+    result.sz = count(result.root.get());
     return result;
 }
 

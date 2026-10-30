@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(Lab1 CXX)
+project(Lab1BinaryTree CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,13 +8,14 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
-add_executable(console_main src/console_main.cpp src/Sequence.cpp)
+add_executable(console_main src/console_main.cpp)
 target_include_directories(console_main PRIVATE src)
 
-add_executable(benchmark src/benchmark.cpp src/Sequence.cpp)
+add_executable(benchmark src/benchmark.cpp)
 target_include_directories(benchmark PRIVATE src)
 
-add_executable(tests src/tests.cpp src/Sequence.cpp)
+add_executable(tests src/tests.cpp)
 target_include_directories(tests PRIVATE src)
 target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main)
+
 add_test(NAME gtest_binary_tree COMMAND tests)

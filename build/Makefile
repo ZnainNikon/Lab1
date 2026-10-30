@@ -165,36 +165,6 @@ tests/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
-src/Sequence.o: src/Sequence.cpp.o
-.PHONY : src/Sequence.o
-
-# target to build an object file
-src/Sequence.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.o
-.PHONY : src/Sequence.cpp.o
-
-src/Sequence.i: src/Sequence.cpp.i
-.PHONY : src/Sequence.i
-
-# target to preprocess a source file
-src/Sequence.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.i
-.PHONY : src/Sequence.cpp.i
-
-src/Sequence.s: src/Sequence.cpp.s
-.PHONY : src/Sequence.s
-
-# target to generate assembly for a file
-src/Sequence.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/console_main.dir/build.make CMakeFiles/console_main.dir/src/Sequence.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/benchmark.dir/build.make CMakeFiles/benchmark.dir/src/Sequence.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/Sequence.cpp.s
-.PHONY : src/Sequence.cpp.s
-
 src/benchmark.o: src/benchmark.cpp.o
 .PHONY : src/benchmark.o
 
@@ -279,9 +249,6 @@ help:
 	@echo "... benchmark"
 	@echo "... console_main"
 	@echo "... tests"
-	@echo "... src/Sequence.o"
-	@echo "... src/Sequence.i"
-	@echo "... src/Sequence.s"
 	@echo "... src/benchmark.o"
 	@echo "... src/benchmark.i"
 	@echo "... src/benchmark.s"

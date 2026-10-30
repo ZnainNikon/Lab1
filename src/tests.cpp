@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 #include "BinaryTree.hpp"
-#include "Sequence.hpp"
-#include "ListSequence.hpp"
-
+#include "array.hpp"
 #include <string>
 
 TEST(Constructor, EmptyOnCreate)
@@ -40,7 +38,10 @@ TEST(Basic, DuplicateNotInserted)
 TEST(Basic, Remove)
 {
     BinaryTree<int> t;
-    t.insert(10); t.insert(5); t.insert(15); t.insert(1);
+    t.insert(10);
+    t.insert(5);
+    t.insert(15);
+    t.insert(1);
     t.remove(15);
     EXPECT_FALSE(t.contains(15));
     EXPECT_EQ(t.size(), 3u);
@@ -49,7 +50,9 @@ TEST(Basic, Remove)
 TEST(Basic, RemoveRoot)
 {
     BinaryTree<int> t;
-    t.insert(10); t.insert(5); t.insert(15);
+    t.insert(10);
+    t.insert(5);
+    t.insert(15);
     t.remove(10);
     EXPECT_FALSE(t.contains(10));
     EXPECT_EQ(t.size(), 2u);
@@ -58,7 +61,9 @@ TEST(Basic, RemoveRoot)
 TEST(Basic, Clear)
 {
     BinaryTree<int> t;
-    t.insert(1); t.insert(2); t.insert(3);
+    t.insert(1);
+    t.insert(2);
+    t.insert(3);
     t.clear();
     EXPECT_TRUE(t.empty());
 }
@@ -67,41 +72,43 @@ TEST(Traversals, InorderIsSorted)
 {
     BinaryTree<int> t;
     for (int x : {10, 5, 15, 1, 7, 12, 20}) t.insert(x);
-    ListSequence<int> in;
-    t.inorder(in);
-    ASSERT_EQ(in.GetLength(), 7u);
-    for (size_t i = 0; i + 1 < in.GetLength(); i++)
-        EXPECT_LT(in.Get(i), in.Get(i + 1));
+    
+    MyVector<int> result;
+    t.inorder([&](int v) { result.push_back(v); });
+    
+    ASSERT_EQ(result.size(), 7u);
+    for (size_t i = 0; i + 1 < result.size(); i++)
+        EXPECT_LT(result[i], result[i + 1]);
 }
 
 TEST(Traversals, PreorderStartsWithRoot)
 {
     BinaryTree<int> t;
     for (int x : {10, 5, 15, 1}) t.insert(x);
-    ListSequence<int> pre;
-    t.preorder(pre);
-    ASSERT_GT(pre.GetLength(), 0u);
-    EXPECT_EQ(pre.Get(0), 10);
+    MyVector<int> result;
+    t.preorder([&](int v) { result.push_back(v); });
+    ASSERT_GT(result.size(), 0u);
+    EXPECT_EQ(result[0], 10);
 }
 
 TEST(Traversals, PostorderEndsWithRoot)
 {
     BinaryTree<int> t;
     for (int x : {10, 5, 15, 1}) t.insert(x);
-    ListSequence<int> post;
-    t.postorder(post);
-    ASSERT_GT(post.GetLength(), 0u);
-    EXPECT_EQ(post.Get(post.GetLength() - 1), 10);
+    MyVector<int> result;
+    t.postorder([&](int v) { result.push_back(v); });
+    ASSERT_GT(result.size(), 0u);
+    EXPECT_EQ(result[result.size() - 1], 10);
 }
 
 TEST(Traversals, LevelStartsAtRoot)
 {
     BinaryTree<int> t;
     for (int x : {10, 5, 15}) t.insert(x);
-    ListSequence<int> level;
-    t.levelOrder(level);
-    ASSERT_GT(level.GetLength(), 0u);
-    EXPECT_EQ(level.Get(0), 10);
+    MyVector<int> result;
+    t.levelOrder([&](int v) { result.push_back(v); });
+    ASSERT_GT(result.size(), 0u);
+    EXPECT_EQ(result[0], 10);
 }
 
 TEST(MapReduce, MapSquares)
@@ -112,6 +119,40 @@ TEST(MapReduce, MapSquares)
     EXPECT_TRUE(sq.contains(25));
     EXPECT_TRUE(sq.contains(9));
     EXPECT_EQ(sq.size(), t.size());
+}
+
+TEST(MapReduce, WhereEvens)
+{
+    BinaryTree<int> t;
+    for (int x : {1, 2, 3, 4, 5, 6, 7, 8}) t.insert(x);
+    auto evens = t.where([](const int& x) { return x % 2 == 0; });
+    EXPECT_EQ(evens.size(), 4u);
+    EXPECT_TRUE(evens.contains(2));
+    EXPECT_TRUE(evens.contains(4));
+    EXPECT_TRUE(evens.contains(6));
+    EXPECT_TRUE(evens.contains(8));
+    EXPECT_FALSE(evens.contains(1));
+    EXPECT_FALSE(evens.contains(3));
+}
+
+TEST(MapReduce, WhereGreaterThan3)
+{
+    BinaryTree<int> t;
+    for (int x : {1, 2, 3, 4, 5, 6}) t.insert(x);
+    auto big = t.where([](const int& x) { return x > 3; });
+    EXPECT_EQ(big.size(), 3u);
+    EXPECT_TRUE(big.contains(4));
+    EXPECT_TRUE(big.contains(5));
+    EXPECT_TRUE(big.contains(6));
+    EXPECT_FALSE(big.contains(1));
+}
+
+TEST(MapReduce, WhereEmptyResult)
+{
+    BinaryTree<int> t;
+    for (int x : {1, 2, 3}) t.insert(x);
+    auto nothing = t.where([](const int& x) { return x > 100; });
+    EXPECT_TRUE(nothing.empty());
 }
 
 TEST(MapReduce, ReduceSum)
@@ -176,12 +217,14 @@ TEST(SaveLoad, RoundTrip)
     for (int x : {10, 5, 15, 1}) t.insert(x);
     std::string s = t.saveToString();
     auto t2 = BinaryTree<int>::loadFromString(s);
-    ListSequence<int> a, b;
-    t.preorder(a);
-    t2.preorder(b);
-    ASSERT_EQ(a.GetLength(), b.GetLength());
-    for (size_t i = 0; i < a.GetLength(); i++)
-        EXPECT_EQ(a.Get(i), b.Get(i));
+    
+    MyVector<int> a, b;
+    t.preorder([&](int v) { a.push_back(v); });
+    t2.preorder([&](int v) { b.push_back(v); });
+    
+    ASSERT_EQ(a.size(), b.size());
+    for (size_t i = 0; i < a.size(); i++)
+        EXPECT_EQ(a[i], b[i]);
     EXPECT_EQ(t2.size(), t.size());
 }
 
@@ -197,7 +240,10 @@ TEST(SaveLoad, EmptyTree)
 TEST(TypesDouble, Basic)
 {
     BinaryTree<double> t;
-    t.insert(2.5); t.insert(1.0); t.insert(3.14); t.insert(0.5);
+    t.insert(2.5);
+    t.insert(1.0);
+    t.insert(3.14);
+    t.insert(0.5);
     EXPECT_EQ(t.size(), 4u);
     EXPECT_TRUE(t.contains(2.5));
     EXPECT_FALSE(t.contains(9.99));
@@ -206,7 +252,10 @@ TEST(TypesDouble, Basic)
 TEST(TypesString, Basic)
 {
     BinaryTree<std::string> t;
-    t.insert("m"); t.insert("a"); t.insert("z"); t.insert("b");
+    t.insert("m");
+    t.insert("a");
+    t.insert("z");
+    t.insert("b");
     EXPECT_EQ(t.size(), 4u);
     EXPECT_TRUE(t.contains("a"));
     EXPECT_FALSE(t.contains("x"));

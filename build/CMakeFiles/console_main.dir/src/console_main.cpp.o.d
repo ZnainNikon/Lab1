@@ -813,11 +813,6 @@ CMakeFiles/console_main.dir/src/console_main.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h \
-  /Users/polzovatel/Desktop/lab1/src/ListSequence.hpp \
-  /Users/polzovatel/Desktop/lab1/src/Sequence.hpp \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
-  /Users/polzovatel/Desktop/lab1/src/Sequence.tpp \
-  /Users/polzovatel/Desktop/lab1/src/LinkedList.hpp \
-  /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp \
-  /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp \
-  /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp
+  /Users/polzovatel/Desktop/lab1/src/array.hpp \
+  /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream

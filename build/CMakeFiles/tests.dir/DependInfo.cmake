@@ -8,7 +8,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/polzovatel/Desktop/lab1/src/Sequence.cpp" "CMakeFiles/tests.dir/src/Sequence.cpp.o" "gcc" "CMakeFiles/tests.dir/src/Sequence.cpp.o.d"
   "/Users/polzovatel/Desktop/lab1/src/tests.cpp" "CMakeFiles/tests.dir/src/tests.cpp.o" "gcc" "CMakeFiles/tests.dir/src/tests.cpp.o.d"
   )
 

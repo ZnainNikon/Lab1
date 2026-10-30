@@ -879,10 +879,5 @@ CMakeFiles/tests.dir/src/tests.cpp.o: \
   /opt/homebrew/include/gtest/gtest_pred_impl.h \
   /opt/homebrew/include/gtest/gtest_prod.h \
   /Users/polzovatel/Desktop/lab1/src/BinaryTree.hpp \
-  /Users/polzovatel/Desktop/lab1/src/ListSequence.hpp \
-  /Users/polzovatel/Desktop/lab1/src/Sequence.hpp \
-  /Users/polzovatel/Desktop/lab1/src/Sequence.tpp \
-  /Users/polzovatel/Desktop/lab1/src/LinkedList.hpp \
-  /Users/polzovatel/Desktop/lab1/src/LinkedList.tpp \
-  /Users/polzovatel/Desktop/lab1/src/ListSequence.tpp \
+  /Users/polzovatel/Desktop/lab1/src/array.hpp \
   /Users/polzovatel/Desktop/lab1/src/BinaryTree.tpp

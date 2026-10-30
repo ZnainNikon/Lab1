@@ -1,10 +1,10 @@
 #include "BinaryTree.hpp"
-#include "Sequence.hpp"
-#include "ListSequence.hpp"
+#include "array.hpp"
 
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <random>
 #include <string>
 
 using namespace std::chrono;
@@ -29,8 +29,7 @@ void printTableRow(size_t n, double insertTime, double findTime, double removeTi
 
 int main()
 {
-
-    size_t sizes[] = { 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000 };
+    size_t sizes[] {1000, 5000, 10000, 50000, 100000, 500000, 1000000};
     size_t sizesCount = sizeof(sizes) / sizeof(sizes[0]);
 
     std::string separator = "+----------+--------------+--------------+--------------+";
@@ -39,7 +38,7 @@ int main()
               << std::left << std::setw(8) << "N" << " | "
               << std::left << std::setw(12) << "Вставка (мс)" << " | "
               << std::left << std::setw(12) << "Поиск (мс)" << " | "
-              << std::left << std::setw(12) << "Удаление (мс)" << "|\n";
+              << std::left << std::setw(12) << "Удаление (мс)" << " |\n";
     std::cout << separator << "\n";
 
     for (size_t idx = 0; idx < sizesCount; idx++)
@@ -48,10 +47,10 @@ int main()
         BinaryTree<int> tree;
 
         double insertTime = measureTimeMs([&]() {
-            size_t val = 25;
+            size_t val = 42;
             for (size_t i = 0; i < n; i++)
             {
-                val = (val * 1103515245 + 12345) % n; // LCG
+                val = (val * 1103515245 + 12345) % n;
                 tree.insert((int)val);
             }
         });
@@ -69,6 +68,6 @@ int main()
 
         printTableRow(n, insertTime, findTime, removeTime);
     }
-    std::cout << separator << std::endl;
+    std::cout << separator;
     return 0;
 }
