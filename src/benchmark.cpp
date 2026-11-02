@@ -1,6 +1,5 @@
 #include "BinaryTree.hpp"
 #include "array.hpp"
-
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -10,7 +9,7 @@
 using namespace std::chrono;
 
 template <typename Func>
-double measureTimeMs(Func func)
+double Time(Func func)
 {
     auto start = high_resolution_clock::now();
     func();
@@ -18,13 +17,13 @@ double measureTimeMs(Func func)
     return duration<double, std::milli>(end - start).count();
 }
 
-void printTableRow(size_t n, double insertTime, double findTime, double removeTime)
+void Print(size_t n, double InsertTime, double FindTime, double RemoveTime)
 {
     std::cout << "| " 
-              << std::left << std::setw(8) << n << " | "
-              << std::fixed << std::setprecision(2) << std::setw(12) << insertTime << " | "
-              << std::fixed << std::setprecision(2) << std::setw(12) << findTime << " | "
-              << std::fixed << std::setprecision(2) << std::setw(12) << removeTime << " |\n";
+        << std::left << std::setw(8) << n << " | "
+        << std::fixed << std::setprecision(2) << std::setw(12) << InsertTime << " | "
+        << std::fixed << std::setprecision(2) << std::setw(12) << FindTime << " | "
+        << std::fixed << std::setprecision(2) << std::setw(12) << RemoveTime << " |\n";
 }
 
 int main()
@@ -36,9 +35,9 @@ int main()
     std::cout << separator << "\n";
     std::cout << "| " 
               << std::left << std::setw(8) << "N" << " | "
-              << std::left << std::setw(12) << "Вставка (мс)" << " | "
-              << std::left << std::setw(12) << "Поиск (мс)" << " | "
-              << std::left << std::setw(12) << "Удаление (мс)" << " |\n";
+              << std::left << std::setw(12) << "Вставка" << " | "
+              << std::left << std::setw(12) << "Поиск" << " | "
+              << std::left << std::setw(12) << "Удаление" << " |\n";
     std::cout << separator << "\n";
 
     for (size_t idx = 0; idx < sizesCount; idx++)
@@ -46,7 +45,7 @@ int main()
         size_t n = sizes[idx];
         BinaryTree<int> tree;
 
-        double insertTime = measureTimeMs([&]() {
+        double InsertTime = Time([&]() {
             size_t val = 42;
             for (size_t i = 0; i < n; i++)
             {
@@ -54,19 +53,16 @@ int main()
                 tree.insert((int)val);
             }
         });
-
-        double findTime = measureTimeMs([&]() {
+        double FindTime = Time([&]() {
             for (size_t i = 0; i < n; i++)
                 tree.contains((int)i);
             tree.contains(-999);
         });
-
-        double removeTime = measureTimeMs([&]() {
+        double RemoveTime = Time([&]() {
             for (size_t i = 0; i < n; i++)
                 tree.remove((int)i);
         });
-
-        printTableRow(n, insertTime, findTime, removeTime);
+        Print(n, InsertTime, FindTime, RemoveTime);
     }
     std::cout << separator;
     return 0;

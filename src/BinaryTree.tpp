@@ -322,7 +322,8 @@ void BinaryTree<T>::serialize(const std::unique_ptr<Node>& n, std::ostream& os)
 template <class T>
 std::unique_ptr<typename BinaryTree<T>::Node> BinaryTree<T>::deserialize(std::istream& is)
 {
-    char c = 0; is >> c;
+    char c = 0; 
+    is >> c;
     if (c != '(') throw std::invalid_argument("deserialize: expected '('");
     is >> std::ws;
     

@@ -206,7 +206,7 @@ void printTree(const BinaryTree<T>& tree)
 
 void printMenu(const char* typeName, size_t size)
 {
-    std::cout << "\n===== бинарное дерево (" << typeName
+    std::cout << "\n===== Бинарное дерево (" << typeName
               << ", узлов: " << size << ") =====\n";
     std::cout << " 1. Вставить значения\n";
     std::cout << " 2. Поиск значения\n";
