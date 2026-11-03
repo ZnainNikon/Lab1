@@ -31,15 +31,15 @@ template <class T> class BinaryTree
     void Remove(const T& value);
     void Clear();
 
-    void Preorder(std::function<void(const T&)> visitor) const;
-    void Postorder(std::function<void(const T&)> visitor) const;
-    void Inorder(std::function<void(const T&)> visitor) const;
-    void LevelOrder(std::function<void(const T&)> visitor) const;
+    void Preorder(std::function<void (const T&)> visitor) const;
+    void Postorder(std::function<void (const T&)> visitor) const;
+    void Inorder(std::function<void (const T&)> visitor) const;
+    void LevelOrder(std::function<void (const T&)> visitor) const;
 
     template <class R, class F>
     BinaryTree<R> Map(F f) const;
 
-    BinaryTree<T> Where(std::function<bool(const T&)> predicate) const;
+    BinaryTree<T> Where(std::function<bool (const T&)> predicate) const;
 
     template <class R>
     R Reduce(std::function<R(const T&, R)> f, R start) const;
@@ -50,15 +50,25 @@ template <class T> class BinaryTree
     bool FindByPath(const std::string& path, T& out) const;
     bool FindByRelativePath(const std::string& pathFromRoot, T& out) const;
 
-    // Сериализация через пробелы (preorder)
     std::string SaveToString() const;
     static BinaryTree<T> LoadFromString(const std::string& s);
 
-    bool Empty() const { return root == nullptr; }
-    size_t Size() const { return sz; }
-    int Height() const { return HeightOf(root); }
-
-    const Node<T>* GetRoot() const { return root; }
+    bool Empty() const 
+    { 
+        return root == nullptr; 
+    }
+    size_t Size() const 
+    { 
+        return sz; 
+    }
+    int Height() const 
+    { 
+        return HeightOf(root); 
+    }
+    const Node<T>* GetRoot() const 
+    { 
+        return root; 
+    }
 
     private:
     Node<T>* root = nullptr;
@@ -68,9 +78,9 @@ template <class T> class BinaryTree
     static void Destroy(Node<T>* n);
     static int HeightOf(const Node<T>* n);
 
-    static void PreorderFill(const Node<T>* n, std::function<void(const T&)>& visitor);
-    static void PostorderFill(const Node<T>* n, std::function<void(const T&)>& visitor);
-    static void InorderFill(const Node<T>* n, std::function<void(const T&)>& visitor);
+    static void PreorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
+    static void PostorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
+    static void InorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
 
     static const Node<T>* FindNode(const Node<T>* n, const T& v);
     static Node<T>* InsertNode(Node<T>* n, const T& v, bool& inserted);
