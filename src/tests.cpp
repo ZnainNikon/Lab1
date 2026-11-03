@@ -71,7 +71,10 @@ TEST(Basic, Clear)
 TEST(Traversals, InorderIsSorted)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1, 7, 12, 20}) t.Insert(x);
+    for (int x : {10, 5, 15, 1, 7, 12, 20}) 
+    {
+        t.Insert(x);
+    }
     
     MyVector<int> result;
     t.Inorder([&](int v) { result.push_back(v); });
@@ -84,7 +87,11 @@ TEST(Traversals, InorderIsSorted)
 TEST(Traversals, PreorderStartsWithRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.Insert(x);
+    for (int x : {10, 5, 15, 1}) 
+    { 
+        t.Insert(x);
+    }
+
     MyVector<int> result;
     t.Preorder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
@@ -94,7 +101,10 @@ TEST(Traversals, PreorderStartsWithRoot)
 TEST(Traversals, PostorderEndsWithRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.Insert(x);
+    for (int x : {10, 5, 15, 1}) 
+    {
+        t.Insert(x);
+    }
     MyVector<int> result;
     t.Postorder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
@@ -104,7 +114,10 @@ TEST(Traversals, PostorderEndsWithRoot)
 TEST(Traversals, LevelStartsAtRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15}) t.Insert(x);
+    for (int x : {10, 5, 15}) 
+    {
+        t.Insert(x);
+    }
     MyVector<int> result;
     t.LevelOrder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
@@ -114,7 +127,10 @@ TEST(Traversals, LevelStartsAtRoot)
 TEST(MapReduce, MapSquares)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5}) t.Insert(x);
+    for (int x : {1, 2, 3, 4, 5}) 
+    {
+        t.Insert(x);
+    }
     auto sq = t.Map<int>([](int x) { return x * x; });
     EXPECT_TRUE(sq.Contains(25));
     EXPECT_TRUE(sq.Contains(9));
@@ -124,7 +140,10 @@ TEST(MapReduce, MapSquares)
 TEST(MapReduce, WhereEvens)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5, 6, 7, 8}) t.Insert(x);
+    for (int x : {1, 2, 3, 4, 5, 6, 7, 8}) 
+    {
+        t.Insert(x);
+    }
     auto evens = t.Where([](const int& x) { return x % 2 == 0; });
     EXPECT_EQ(evens.Size(), 4u);
     EXPECT_TRUE(evens.Contains(2));
@@ -137,7 +156,10 @@ TEST(MapReduce, WhereEvens)
 TEST(MapReduce, WhereGreaterThan3)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5, 6}) t.Insert(x);
+    for (int x : {1, 2, 3, 4, 5, 6}) 
+    {
+        t.Insert(x);
+    }
     auto big = t.Where([](const int& x) { return x > 3; });
     EXPECT_EQ(big.Size(), 3u);
     EXPECT_TRUE(big.Contains(4));
@@ -149,7 +171,10 @@ TEST(MapReduce, WhereGreaterThan3)
 TEST(MapReduce, WhereEmptyResult)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3}) t.Insert(x);
+    for (int x : {1, 2, 3}) 
+    {
+        t.Insert(x);
+    }
     auto nothing = t.Where([](const int& x) { return x > 100; });
     EXPECT_TRUE(nothing.Empty());
 }
@@ -157,7 +182,10 @@ TEST(MapReduce, WhereEmptyResult)
 TEST(MapReduce, ReduceSum)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5}) t.Insert(x);
+    for (int x : {1, 2, 3, 4, 5}) 
+    {
+        t.Insert(x);
+    }
     int sum = t.Reduce<int>([](const int& x, int acc) { return acc + x; }, 0);
     EXPECT_EQ(sum, 15);
 }
@@ -165,7 +193,10 @@ TEST(MapReduce, ReduceSum)
 TEST(Subtrees, ExtractAndContain)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1, 6}) t.Insert(x);
+    for (int x : {10, 5, 15, 1, 6}) 
+    {
+        t.Insert(x);
+    }
     auto sub = t.ExtractSubtree(5);
     EXPECT_TRUE(sub.Contains(5));
     EXPECT_TRUE(t.ContainsSubtree(sub));
@@ -189,7 +220,10 @@ TEST(Subtrees, EmptySubtree)
 TEST(Path, FindByAbsolutePath)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.Insert(x);
+    for (int x : {10, 5, 15, 1}) 
+    {
+        t.Insert(x);
+    }
     int v = 0;
     EXPECT_TRUE(t.FindByPath("10", v));
     EXPECT_EQ(v, 10);
@@ -204,7 +238,10 @@ TEST(Path, FindByAbsolutePath)
 TEST(Path, FindByRelativePath)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15}) t.Insert(x);
+    for (int x : {10, 5, 15}) 
+    {
+        t.Insert(x);
+    }
     int v = 0;
     EXPECT_TRUE(t.FindByRelativePath("10.15", v));
     EXPECT_EQ(v, 15);
@@ -213,7 +250,10 @@ TEST(Path, FindByRelativePath)
 TEST(SaveLoad, RoundTrip)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.Insert(x);
+    for (int x : {10, 5, 15, 1}) 
+    {
+        t.Insert(x);
+    }
     std::string s = t.SaveToString();
     auto t2 = BinaryTree<int>::LoadFromString(s);
     
