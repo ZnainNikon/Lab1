@@ -1,83 +1,97 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 #include <stdexcept>
 #include <string>
 #include <sstream>
 #include <algorithm>
 #include "array.hpp"
 
-template <class T> class BinaryTree
+template <typename T>
+struct Node
+{
+    T value;
+    Node* left = nullptr;
+    Node* right = nullptr;
+    explicit Node(const T& v) : value(v) {}
+};
+
+template <typename T> 
+class BinaryTree
 {
     public:
-    using value_type = T;
-
-    struct Node
-    {
-        T value;
-        std::unique_ptr<Node> left = nullptr;
-        std::unique_ptr<Node> right = nullptr;
-        explicit Node(const T& v) : value(v) {}
-    };
-
     BinaryTree() = default;
     BinaryTree(const BinaryTree& other);
     BinaryTree& operator=(const BinaryTree& other);
-    BinaryTree(BinaryTree&& other) noexcept = default;
-    BinaryTree& operator=(BinaryTree&& other) noexcept = default;
-    ~BinaryTree() = default;
+    BinaryTree(BinaryTree&& other) noexcept;
+    BinaryTree& operator=(BinaryTree&& other) noexcept;
+    ~BinaryTree();
 
-    void insert(const T& value);
-    bool contains(const T& value) const;
-    void remove(const T& value);
-    void clear();
+    void Insert(const T& value);
+    bool Contains(const T& value) const;
+    void Remove(const T& value);
+    void Clear();
 
-    void preorder(std::function<void(const T&)> visitor) const;
-    void postorder(std::function<void(const T&)> visitor) const;
-    void inorder(std::function<void(const T&)> visitor) const;
-    void levelOrder(std::function<void(const T&)> visitor) const;
+    void Preorder(std::function< void (const T&) > visitor) const;
+    void Postorder(std::function< void (const T&) > visitor) const;
+    void Inorder(std::function< void (const T&) > visitor) const;
+    void LevelOrder(std::function< void (const T&) > visitor) const;
 
-    template <class R, class F>
-    BinaryTree<R> map(F f) const;
+    template <typename R, typename F>
+    BinaryTree<R> Map(F f) const;
 
-    BinaryTree<T> where(std::function<bool(const T&)> predicate) const;
+    BinaryTree<T> Where(std::function< bool (const T&) > predicate) const;
 
-    template <class R>
-    R reduce(std::function<R(const T&, R)> f, R start) const;
+    template <typename R>
+    R Reduce(std::function< R (const T&, R) > f, R start) const;
 
-    BinaryTree<T> extractSubtree(const T& rootValue) const;
-    bool containsSubtree(const BinaryTree<T>& other) const;
+    BinaryTree<T> ExtractSubtree(const T& rootValue) const;
+    bool ContainsSubtree(const BinaryTree<T>& other) const;
 
-    bool findByPath(const std::string& path, T& out) const;
-    bool findByRelativePath(const std::string& pathFromRoot, T& out) const;
+    bool FindByPath(const std::string& path, T& out) const;
+    bool FindByRelativePath(const std::string& pathFromRoot, T& out) const;
 
-    std::string saveToString() const;
-    static BinaryTree<T> loadFromString(const std::string& s);
+    std::string SaveToString() const;
+    static BinaryTree<T> LoadFromString(const std::string& s);
 
-    bool empty() const { return root == nullptr; }
-    size_t size() const { return sz; }
-    int height() const { return heightOf(root.get()); }
-    const std::unique_ptr<Node>& getRoot() const { return root; }
+    bool Empty() const 
+    { 
+        return root == nullptr; 
+    }
+    size_t Size() const 
+    { 
+        return sz; 
+    }
+    int Height() const 
+    { 
+        return HeightOf(root); 
+    }
+    const Node<T>* GetRoot() const 
+    { 
+        return root; 
+    }
 
     private:
-    std::unique_ptr<Node> root = nullptr;
+    Node<T>* root = nullptr;
     size_t sz = 0;
 
-    // Владеющие операции (unique_ptr по значению)
-    std::unique_ptr<Node> insertNode(std::unique_ptr<Node> n, const T& v, bool& inserted);
-    std::unique_ptr<Node> removeNode(std::unique_ptr<Node> n, const T& v, bool& removed);
+    static Node<T>* CloneNode(const Node<T>* src);
+    static void Destroy(Node<T>* n);
+    static int HeightOf(const Node<T>* n);
 
-    // Навигационные операции (сырые указатели по значению, никаких ссылок на указатели)
-    static std::unique_ptr<Node> cloneNode(Node* src);   // получает сырой, возвращает unique_ptr (владение)
-    static int heightOf(const Node* n);
-    static void preorderFill(const Node* n, std::function<void(const T&)>& visitor);
-    static void postorderFill(const Node* n, std::function<void(const T&)>& visitor);
-    static void inorderFill(const Node* n, std::function<void(const T&)>& visitor);
-    static const Node* findNode(const Node* n, const T& v); // возвращает сырой указатель по значению
-    static bool sameStructure(const Node* a, const Node* b);
-    static void serialize(const Node* n, std::ostream& os);
-    static std::unique_ptr<Node> deserialize(std::istream& is);
+    static void PreorderFill(const Node<T>* n, std::function< void (const T&) >& visitor);
+    static void PostorderFill(const Node<T>* n, std::function< void (const T&) >& visitor);
+    static void InorderFill(const Node<T>* n, std::function< void (const T&) >& visitor);
+
+    static const Node<T>* FindNode(const Node<T>* n, const T& v);
+
+    static Node<T>* InsertNode(Node<T>* n, const T& v, bool& inserted);
+    static Node<T>* RemoveNode(Node<T>* n, const T& v, bool& removed);
+
+    static bool SameStructure(const Node<T>* a, const Node<T>* b);
+
+    static void Serialize(const Node<T>* n, std::ostream& os);
+    static Node<T>* Deserialize(std::istream& is);
 };
 
 #include "BinaryTree.tpp"
