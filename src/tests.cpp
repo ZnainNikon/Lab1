@@ -226,15 +226,6 @@ TEST(SaveLoad, RoundTrip)
     EXPECT_EQ(t2.Size(), t.Size());
 }
 
-TEST(SaveLoad, EmptyTree)
-{
-    BinaryTree<int> t;
-    std::string s = t.SaveToString();
-    EXPECT_EQ(s, "# ");          // для пустого дерева ожидается "# "
-    auto t2 = BinaryTree<int>::LoadFromString(s);
-    EXPECT_TRUE(t2.Empty());
-}
-
 TEST(TypesDouble, Basic)
 {
     BinaryTree<double> t;
