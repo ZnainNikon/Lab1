@@ -57,27 +57,26 @@ template <class T> class BinaryTree
 
     bool empty() const { return root == nullptr; }
     size_t size() const { return sz; }
-    int height() const { return heightOf(root); }
+    int height() const { return heightOf(root.get()); }
     const std::unique_ptr<Node>& getRoot() const { return root; }
 
     private:
     std::unique_ptr<Node> root = nullptr;
     size_t sz = 0;
 
-    static std::unique_ptr<Node> cloneNode(const std::unique_ptr<Node>& src);
-    static int heightOf(const std::unique_ptr<Node>& n);
-
-    static void preorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
-    static void postorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
-    static void inorderFill(const std::unique_ptr<Node>& n, std::function<void(const T&)>& visitor);
-
-    static bool findNode(const std::unique_ptr<Node>& n, const T& v, const Node** outNode);
-
+    // Владеющие операции (unique_ptr по значению)
     std::unique_ptr<Node> insertNode(std::unique_ptr<Node> n, const T& v, bool& inserted);
     std::unique_ptr<Node> removeNode(std::unique_ptr<Node> n, const T& v, bool& removed);
 
-    static bool sameStructure(const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b);
-    static void serialize(const std::unique_ptr<Node>& n, std::ostream& os);
+    // Навигационные операции (сырые указатели по значению, никаких ссылок на указатели)
+    static std::unique_ptr<Node> cloneNode(Node* src);   // получает сырой, возвращает unique_ptr (владение)
+    static int heightOf(const Node* n);
+    static void preorderFill(const Node* n, std::function<void(const T&)>& visitor);
+    static void postorderFill(const Node* n, std::function<void(const T&)>& visitor);
+    static void inorderFill(const Node* n, std::function<void(const T&)>& visitor);
+    static const Node* findNode(const Node* n, const T& v); // возвращает сырой указатель по значению
+    static bool sameStructure(const Node* a, const Node* b);
+    static void serialize(const Node* n, std::ostream& os);
     static std::unique_ptr<Node> deserialize(std::istream& is);
 };
 
