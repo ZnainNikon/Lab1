@@ -3,7 +3,8 @@
 template <class T>
 int BinaryTree<T>::HeightOf(const Node<T>* n)
 {
-    if (!n) return 0;
+    if (!n) 
+        return 0;
     int leftH = HeightOf(n->left);
     int rightH = HeightOf(n->right);
     return 1 + std::max(leftH, rightH);
@@ -12,7 +13,8 @@ int BinaryTree<T>::HeightOf(const Node<T>* n)
 template <class T>
 Node<T>* BinaryTree<T>::CloneNode(const Node<T>* src)
 {
-    if (!src) return nullptr;
+    if (!src) 
+        return nullptr;
     Node<T>* copy = new Node<T>(src->value);
     copy->left = CloneNode(src->left);
     copy->right = CloneNode(src->right);
@@ -22,7 +24,8 @@ Node<T>* BinaryTree<T>::CloneNode(const Node<T>* src)
 template <class T>
 void BinaryTree<T>::Destroy(Node<T>* n)
 {
-    if (!n) return;
+    if (!n) 
+        return;
     Destroy(n->left);
     Destroy(n->right);
     delete n;
@@ -33,17 +36,19 @@ const Node<T>* BinaryTree<T>::FindNode(const Node<T>* n, const T& v)
 {
     while (n)
     {
-        if (v < n->value) n = n->left;
-        else if (n->value < v) n = n->right;
-        else return n;
+        if (v < n->value) 
+            n = n->left;
+        else if (n->value < v) 
+            n = n->right;
+        else 
+            return n;
     }
     return nullptr;
 }
 
 
 template <class T>
-BinaryTree<T>::BinaryTree(const BinaryTree& other)
-    : root(CloneNode(other.root)), sz(other.sz) {}
+BinaryTree<T>::BinaryTree(const BinaryTree& other) : root(CloneNode(other.root)), sz(other.sz) {}
 
 template <class T>
 BinaryTree<T>& BinaryTree<T>::operator=(const BinaryTree& other)
@@ -58,8 +63,7 @@ BinaryTree<T>& BinaryTree<T>::operator=(const BinaryTree& other)
 }
 
 template <class T>
-BinaryTree<T>::BinaryTree(BinaryTree&& other) noexcept
-    : root(other.root), sz(other.sz)
+BinaryTree<T>::BinaryTree(BinaryTree&& other) noexcept : root(other.root), sz(other.sz)
 {
     other.root = nullptr;
     other.sz = 0;
@@ -112,7 +116,8 @@ Node<T>* BinaryTree<T>::InsertNode(Node<T>* n, const T& v, bool& inserted)
 template <class T>
 Node<T>* BinaryTree<T>::RemoveNode(Node<T>* n, const T& v, bool& removed)
 {
-    if (!n) return nullptr;
+    if (!n) 
+        return nullptr;
 
     if (v < n->value)
     {
@@ -138,7 +143,10 @@ Node<T>* BinaryTree<T>::RemoveNode(Node<T>* n, const T& v, bool& removed)
             return left;
         }
         Node<T>* successor = n->right;
-        while (successor->left) successor = successor->left;
+        while (successor->left) 
+        {
+            successor = successor->left;
+        }
         n->value = successor->value;
         n->right = RemoveNode(n->right, successor->value, removed);
     }
@@ -149,7 +157,8 @@ Node<T>* BinaryTree<T>::RemoveNode(Node<T>* n, const T& v, bool& removed)
 template <class T>
 void BinaryTree<T>::PreorderFill(const Node<T>* n, std::function<void(const T&)>& visitor)
 {
-    if (!n) return;
+    if (!n) 
+        return;
     visitor(n->value);
     PreorderFill(n->left, visitor);
     PreorderFill(n->right, visitor);
@@ -158,7 +167,8 @@ void BinaryTree<T>::PreorderFill(const Node<T>* n, std::function<void(const T&)>
 template <class T>
 void BinaryTree<T>::PostorderFill(const Node<T>* n, std::function<void(const T&)>& visitor)
 {
-    if (!n) return;
+    if (!n) 
+        return;
     PostorderFill(n->left, visitor);
     PostorderFill(n->right, visitor);
     visitor(n->value);
@@ -167,7 +177,8 @@ void BinaryTree<T>::PostorderFill(const Node<T>* n, std::function<void(const T&)
 template <class T>
 void BinaryTree<T>::InorderFill(const Node<T>* n, std::function<void(const T&)>& visitor)
 {
-    if (!n) return;
+    if (!n) 
+        return;
     InorderFill(n->left, visitor);
     visitor(n->value);
     InorderFill(n->right, visitor);
@@ -179,7 +190,8 @@ void BinaryTree<T>::Insert(const T& value)
 {
     bool inserted = false;
     root = InsertNode(root, value, inserted);
-    if (inserted) sz++;
+    if (inserted) 
+        sz++;
 }
 
 template <class T>
@@ -193,7 +205,8 @@ void BinaryTree<T>::Remove(const T& value)
 {
     bool removed = false;
     root = RemoveNode(root, value, removed);
-    if (removed) sz--;
+    if (removed) 
+        sz--;
 }
 
 template <class T>
@@ -225,7 +238,8 @@ void BinaryTree<T>::Inorder(std::function<void(const T&)> visitor) const
 template <class T>
 void BinaryTree<T>::LevelOrder(std::function<void(const T&)> visitor) const
 {
-    if (!root) return;
+    if (!root) 
+        return;
     
     MyVector<const Node<T>*> queue;
     queue.push_back(root);
@@ -234,8 +248,10 @@ void BinaryTree<T>::LevelOrder(std::function<void(const T&)> visitor) const
     {
         const Node<T>* current = queue[head++];
         visitor(current->value);
-        if (current->left) queue.push_back(current->left);
-        if (current->right) queue.push_back(current->right);
+        if (current->left) 
+            queue.push_back(current->left);
+        if (current->right) 
+            queue.push_back(current->right);
     }
 }
 
@@ -245,7 +261,9 @@ template <class R, class F>
 BinaryTree<R> BinaryTree<T>::Map(F f) const
 {
     BinaryTree<R> result;
-    Preorder([&](const T& value) { result.Insert(f(value)); });
+    Preorder([&](const T& value) { 
+        result.Insert(f(value)); 
+    });
     return result;
 }
 
@@ -254,7 +272,8 @@ BinaryTree<T> BinaryTree<T>::Where(std::function<bool(const T&)> predicate) cons
 {
     BinaryTree<T> result;
     Preorder([&](const T& value) {
-        if (predicate(value)) result.Insert(value);
+        if (predicate(value)) 
+            result.Insert(value);
     });
     return result;
 }
@@ -264,7 +283,9 @@ template <class R>
 R BinaryTree<T>::Reduce(std::function<R(const T&, R)> f, R start) const
 {
     R accumulator = start;
-    Preorder([&](const T& value) { accumulator = f(value, accumulator); });
+    Preorder([&](const T& value) { 
+        accumulator = f(value, accumulator); 
+    });
     return accumulator;
 }
 
@@ -278,7 +299,9 @@ BinaryTree<T> BinaryTree<T>::ExtractSubtree(const T& rootValue) const
     result.root = CloneNode(found);
     
     size_t count = 0;
-    result.Preorder([&](const T&) { count++; });
+    result.Preorder([&](const T&) { 
+        count++; 
+    });
     result.sz = count;
     return result;
 }
@@ -286,21 +309,27 @@ BinaryTree<T> BinaryTree<T>::ExtractSubtree(const T& rootValue) const
 template <class T>
 bool BinaryTree<T>::SameStructure(const Node<T>* a, const Node<T>* b)
 {
-    if (!a && !b) return true;
-    if (!a || !b) return false;
-    if (!(a->value == b->value)) return false;
+    if (!a && !b) 
+        return true;
+    if (!a || !b) 
+        return false;
+    if (!(a->value == b->value)) 
+        return false;
     return SameStructure(a->left, b->left) && SameStructure(a->right, b->right);
 }
 
 template <class T>
 bool BinaryTree<T>::ContainsSubtree(const BinaryTree<T>& other) const
 {
-    if (other.Empty()) return true;
+    if (other.Empty()) 
+        return true;
     
-    std::function<bool(const Node<T>*, const Node<T>*)> find =
+    std::function<bool (const Node<T>*, const Node<T>*)> find =
         [&](const Node<T>* n, const Node<T>* target) -> bool {
-            if (!n) return false;
-            if (SameStructure(n, target)) return true;
+            if (!n) 
+                return false;
+            if (SameStructure(n, target)) 
+                return true;
             return find(n->left, target) || find(n->right, target);
         };
     return find(root, other.root);
@@ -316,23 +345,30 @@ bool BinaryTree<T>::FindByPath(const std::string& path, T& out) const
     bool first = true;
     while (std::getline(reader, token, '.'))
     {
-        if (token.empty()) continue;
+        if (token.empty()) 
+            continue;
         T value{};
         std::istringstream tokenReader(token);
-        if (!(tokenReader >> value)) return false;
+        if (!(tokenReader >> value))    
+            return false;
         if (first)
         {
-            if (!(current->value == value)) return false;
+            if (!(current->value == value)) 
+                return false;
             first = false;
         }
         else
         {
-            if (current->left && current->left->value == value) current = current->left;
-            else if (current->right && current->right->value == value) current = current->right;
-            else return false;
+            if (current->left && current->left->value == value) 
+                current = current->left;
+            else if (current->right && current->right->value == value) 
+                current = current->right;
+            else 
+                return false;
         }
     }
-    if (first) return false;
+    if (first) 
+        return false;
     out = current->value;
     return true;
 }

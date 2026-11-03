@@ -16,7 +16,8 @@ struct Node
     explicit Node(const T& v) : value(v) {}
 };
 
-template <class T> class BinaryTree
+template <class T> 
+class BinaryTree
 {   
     private:
     Node<T>* root = nullptr;

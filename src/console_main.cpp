@@ -6,9 +6,9 @@
 #include <sstream>
 #include <string>
 
-bool ReadInteger(const std::string& prompt, int& result)
+bool ReadInteger(const std::string& buffer, int& result)
 {
-    std::cout << prompt;
+    std::cout << buffer;
     std::string line;
     if (!std::getline(std::cin, line)) 
         return false;
@@ -35,9 +35,9 @@ bool ReadInteger(const std::string& prompt, int& result)
     }
 }
 
-std::string ReadLine(const std::string& prompt)
+std::string ReadLine(const std::string& buffer)
 {
-    std::cout << prompt;
+    std::cout << buffer;
     std::string line;
     if (!std::getline(std::cin, line)) 
         return "";
