@@ -45,13 +45,13 @@ std::string ReadLine(const std::string& buffer)
 }
 
 
-template <typename T>
+template <class T>
 void PrintValue(const T& value) 
 { 
     std::cout << value; 
 }
 
-template <typename T>
+template <class T>
 std::string ValueForTree(const T& value)
 {
     std::ostringstream oss;
@@ -62,7 +62,7 @@ std::string ValueForTree(const T& value)
     return text;
 }
 
-template <typename T>
+template <class T>
 bool ParseValue(const std::string& text, T& parsed)
 {
     if (text.empty()) 
@@ -75,7 +75,7 @@ bool ParseValue(const std::string& text, T& parsed)
 }
 
 
-template <typename T>
+template <class T>
 void PrintTraversal(const std::string& name, const BinaryTree<T>& tree, int type)
 {
     std::cout << name << ": ";
@@ -100,7 +100,7 @@ void PrintTraversal(const std::string& name, const BinaryTree<T>& tree, int type
 }
 
 
-template <typename T>
+template <class T>
 void PrintTree(const BinaryTree<T>& tree)
 {
     if (tree.Empty()) 
@@ -275,7 +275,7 @@ void PrintMenu(const char* typeName, size_t size)
 }
 
 
-template <typename T>
+template <class T>
 void HandleInsert(BinaryTree<T>& tree)
 {
     std::string line = ReadLine("Введите значения через пробел: ");
@@ -316,7 +316,7 @@ void HandleInsert(BinaryTree<T>& tree)
     std::cout << "\n";
 }
 
-template <typename T>
+template <class T>
 void HandleFind(BinaryTree<T>& tree)
 {
     std::string text = ReadLine("Значение для поиска: ");
@@ -329,7 +329,7 @@ void HandleFind(BinaryTree<T>& tree)
     std::cout << (tree.Contains(value) ? "Найдено.\n" : "Не найдено.\n");
 }
 
-template <typename T>
+template <class T>
 void HandleRemove(BinaryTree<T>& tree)
 {
     std::string text = ReadLine("Значение для удаления: ");
@@ -344,7 +344,7 @@ void HandleRemove(BinaryTree<T>& tree)
     std::cout << (tree.Size() < before ? "Удалено.\n" : "Не найдено.\n");
 }
 
-template <typename T>
+template <class T>
 void HandleTraversals(BinaryTree<T>& tree)
 {
     PrintTraversal("Preorder ", tree, 1);
@@ -353,7 +353,7 @@ void HandleTraversals(BinaryTree<T>& tree)
     PrintTraversal("Level    ", tree, 4);
 }
 
-template <typename T>
+template <class T>
 void HandleFindByPath(BinaryTree<T>& tree)
 {
     std::string path = ReadLine("Путь через точку (например 10.5.1): ");
@@ -372,7 +372,7 @@ void HandleFindByPath(BinaryTree<T>& tree)
     else std::cout << "Путь не найден.\n";
 }
 
-template <typename T>
+template <class T>
 void HandleExtractSubtree(BinaryTree<T>& tree)
 {
     std::string text = ReadLine("Значение корня поддерева: ");
@@ -394,13 +394,13 @@ void HandleExtractSubtree(BinaryTree<T>& tree)
     std::cout << "\n";
 }
 
-template <typename T>
+template <class T>
 void HandleSave(const BinaryTree<T>& tree)
 {
     std::cout << "Строка: " << tree.SaveToString() << "\n";
 }
 
-template <typename T>
+template <class T>
 void HandleLoad(BinaryTree<T>& tree)
 {
     std::string text = ReadLine("Введите значения в preorder (например: 10 5 3 7 15): ");
@@ -422,7 +422,7 @@ void HandleLoad(BinaryTree<T>& tree)
     }
 }
 
-template <typename T>
+template <class T>
 void HandleClear(BinaryTree<T>& tree)
 {
     tree.Clear();
@@ -471,7 +471,7 @@ int AskValueType()
     }
 }
 
-template <typename T>
+template <class T>
 void RunTree(const char* typeName)
 {
     BinaryTree<T> tree;
