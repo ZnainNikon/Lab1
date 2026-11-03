@@ -17,7 +17,24 @@ struct Node
 };
 
 template <class T> class BinaryTree
-{
+{   
+    private:
+    Node<T>* root = nullptr;
+    size_t sz = 0;
+
+    static Node<T>* CloneNode(const Node<T>* src);
+    static void Destroy(Node<T>* n);
+    static int HeightOf(const Node<T>* n);
+
+    static void PreorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
+    static void PostorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
+    static void InorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
+
+    static const Node<T>* FindNode(const Node<T>* n, const T& v);
+    static Node<T>* InsertNode(Node<T>* n, const T& v, bool& inserted);
+    static Node<T>* RemoveNode(Node<T>* n, const T& v, bool& removed);
+    static bool SameStructure(const Node<T>* a, const Node<T>* b);
+
     public:
     BinaryTree() = default;
     BinaryTree(const BinaryTree& other);
@@ -69,23 +86,6 @@ template <class T> class BinaryTree
     { 
         return root; 
     }
-
-    private:
-    Node<T>* root = nullptr;
-    size_t sz = 0;
-
-    static Node<T>* CloneNode(const Node<T>* src);
-    static void Destroy(Node<T>* n);
-    static int HeightOf(const Node<T>* n);
-
-    static void PreorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
-    static void PostorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
-    static void InorderFill(const Node<T>* n, std::function<void (const T&)>& visitor);
-
-    static const Node<T>* FindNode(const Node<T>* n, const T& v);
-    static Node<T>* InsertNode(Node<T>* n, const T& v, bool& inserted);
-    static Node<T>* RemoveNode(Node<T>* n, const T& v, bool& removed);
-    static bool SameStructure(const Node<T>* a, const Node<T>* b);
 };
 
 #include "BinaryTree.tpp"
