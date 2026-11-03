@@ -1,5 +1,4 @@
-#ifndef BINARY_TREE_HPP
-#define BINARY_TREE_HPP
+#pragma once
 
 #include <functional>
 #include <memory>
@@ -83,5 +82,3 @@ template <class T> class BinaryTree
 };
 
 #include "BinaryTree.tpp"
-
-#endif

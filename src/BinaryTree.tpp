@@ -1,5 +1,4 @@
-#ifndef BINARY_TREE_TPP
-#define BINARY_TREE_TPP
+#pragma once
 
 template <class T>
 int BinaryTree<T>::heightOf(const std::unique_ptr<Node>& n)
@@ -363,5 +362,3 @@ BinaryTree<T> BinaryTree<T>::loadFromString(const std::string& s)
     result.sz = count(result.root.get());
     return result;
 }
-
-#endif
