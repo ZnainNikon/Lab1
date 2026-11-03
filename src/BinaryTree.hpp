@@ -60,7 +60,7 @@ class BinaryTree
     BinaryTree<T> Where(std::function<bool (const T&)> predicate) const;
 
     template <class R>
-    R Reduce(std::function<R(const T&, R)> f, R start) const;
+    R Reduce(std::function<R (const T&, R)> f, R start) const;
 
     BinaryTree<T> ExtractSubtree(const T& rootValue) const;
     bool ContainsSubtree(const BinaryTree<T>& other) const;
