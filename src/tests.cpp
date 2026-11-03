@@ -6,75 +6,75 @@
 TEST(Constructor, EmptyOnCreate)
 {
     BinaryTree<int> t;
-    EXPECT_TRUE(t.empty());
-    EXPECT_EQ(t.size(), 0u);
-    EXPECT_EQ(t.height(), 0);
+    EXPECT_TRUE(t.Empty());
+    EXPECT_EQ(t.Size(), 0u);
+    EXPECT_EQ(t.Height(), 0);
 }
 
 TEST(Basic, InsertAndContains)
 {
     BinaryTree<int> t;
-    t.insert(10);
-    t.insert(5);
-    t.insert(15);
-    t.insert(1);
-    EXPECT_EQ(t.size(), 4u);
-    EXPECT_TRUE(t.contains(10));
-    EXPECT_TRUE(t.contains(5));
-    EXPECT_TRUE(t.contains(15));
-    EXPECT_TRUE(t.contains(1));
-    EXPECT_FALSE(t.contains(999));
+    t.Insert(10);
+    t.Insert(5);
+    t.Insert(15);
+    t.Insert(1);
+    EXPECT_EQ(t.Size(), 4u);
+    EXPECT_TRUE(t.Contains(10));
+    EXPECT_TRUE(t.Contains(5));
+    EXPECT_TRUE(t.Contains(15));
+    EXPECT_TRUE(t.Contains(1));
+    EXPECT_FALSE(t.Contains(999));
 }
 
 TEST(Basic, DuplicateNotInserted)
 {
     BinaryTree<int> t;
-    t.insert(7);
-    t.insert(7);
-    t.insert(7);
-    EXPECT_EQ(t.size(), 1u);
+    t.Insert(7);
+    t.Insert(7);
+    t.Insert(7);
+    EXPECT_EQ(t.Size(), 1u);
 }
 
 TEST(Basic, Remove)
 {
     BinaryTree<int> t;
-    t.insert(10);
-    t.insert(5);
-    t.insert(15);
-    t.insert(1);
-    t.remove(15);
-    EXPECT_FALSE(t.contains(15));
-    EXPECT_EQ(t.size(), 3u);
+    t.Insert(10);
+    t.Insert(5);
+    t.Insert(15);
+    t.Insert(1);
+    t.Remove(15);
+    EXPECT_FALSE(t.Contains(15));
+    EXPECT_EQ(t.Size(), 3u);
 }
 
 TEST(Basic, RemoveRoot)
 {
     BinaryTree<int> t;
-    t.insert(10);
-    t.insert(5);
-    t.insert(15);
-    t.remove(10);
-    EXPECT_FALSE(t.contains(10));
-    EXPECT_EQ(t.size(), 2u);
+    t.Insert(10);
+    t.Insert(5);
+    t.Insert(15);
+    t.Remove(10);
+    EXPECT_FALSE(t.Contains(10));
+    EXPECT_EQ(t.Size(), 2u);
 }
 
 TEST(Basic, Clear)
 {
     BinaryTree<int> t;
-    t.insert(1);
-    t.insert(2);
-    t.insert(3);
-    t.clear();
-    EXPECT_TRUE(t.empty());
+    t.Insert(1);
+    t.Insert(2);
+    t.Insert(3);
+    t.Clear();
+    EXPECT_TRUE(t.Empty());
 }
 
 TEST(Traversals, InorderIsSorted)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1, 7, 12, 20}) t.insert(x);
+    for (int x : {10, 5, 15, 1, 7, 12, 20}) t.Insert(x);
     
     MyVector<int> result;
-    t.inorder([&](int v) { result.push_back(v); });
+    t.Inorder([&](int v) { result.push_back(v); });
     
     ASSERT_EQ(result.size(), 7u);
     for (size_t i = 0; i + 1 < result.size(); i++)
@@ -84,9 +84,9 @@ TEST(Traversals, InorderIsSorted)
 TEST(Traversals, PreorderStartsWithRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.insert(x);
+    for (int x : {10, 5, 15, 1}) t.Insert(x);
     MyVector<int> result;
-    t.preorder([&](int v) { result.push_back(v); });
+    t.Preorder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
     EXPECT_EQ(result[0], 10);
 }
@@ -94,9 +94,9 @@ TEST(Traversals, PreorderStartsWithRoot)
 TEST(Traversals, PostorderEndsWithRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.insert(x);
+    for (int x : {10, 5, 15, 1}) t.Insert(x);
     MyVector<int> result;
-    t.postorder([&](int v) { result.push_back(v); });
+    t.Postorder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
     EXPECT_EQ(result[result.size() - 1], 10);
 }
@@ -104,9 +104,9 @@ TEST(Traversals, PostorderEndsWithRoot)
 TEST(Traversals, LevelStartsAtRoot)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15}) t.insert(x);
+    for (int x : {10, 5, 15}) t.Insert(x);
     MyVector<int> result;
-    t.levelOrder([&](int v) { result.push_back(v); });
+    t.LevelOrder([&](int v) { result.push_back(v); });
     ASSERT_GT(result.size(), 0u);
     EXPECT_EQ(result[0], 10);
 }
@@ -114,149 +114,147 @@ TEST(Traversals, LevelStartsAtRoot)
 TEST(MapReduce, MapSquares)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5}) t.insert(x);
-    auto sq = t.map<int>([](int x) { return x * x; });
-    EXPECT_TRUE(sq.contains(25));
-    EXPECT_TRUE(sq.contains(9));
-    EXPECT_EQ(sq.size(), t.size());
+    for (int x : {1, 2, 3, 4, 5}) t.Insert(x);
+    auto sq = t.Map<int>([](int x) { return x * x; });
+    EXPECT_TRUE(sq.Contains(25));
+    EXPECT_TRUE(sq.Contains(9));
+    EXPECT_EQ(sq.Size(), t.Size());
 }
 
 TEST(MapReduce, WhereEvens)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5, 6, 7, 8}) t.insert(x);
-    auto evens = t.where([](const int& x) { return x % 2 == 0; });
-    EXPECT_EQ(evens.size(), 4u);
-    EXPECT_TRUE(evens.contains(2));
-    EXPECT_TRUE(evens.contains(4));
-    EXPECT_TRUE(evens.contains(6));
-    EXPECT_TRUE(evens.contains(8));
-    EXPECT_FALSE(evens.contains(1));
-    EXPECT_FALSE(evens.contains(3));
+    for (int x : {1, 2, 3, 4, 5, 6, 7, 8}) t.Insert(x);
+    auto evens = t.Where([](const int& x) { return x % 2 == 0; });
+    EXPECT_EQ(evens.Size(), 4u);
+    EXPECT_TRUE(evens.Contains(2));
+    EXPECT_TRUE(evens.Contains(4));
+    EXPECT_TRUE(evens.Contains(6));
+    EXPECT_TRUE(evens.Contains(8));
+    EXPECT_FALSE(evens.Contains(1));
 }
 
 TEST(MapReduce, WhereGreaterThan3)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5, 6}) t.insert(x);
-    auto big = t.where([](const int& x) { return x > 3; });
-    EXPECT_EQ(big.size(), 3u);
-    EXPECT_TRUE(big.contains(4));
-    EXPECT_TRUE(big.contains(5));
-    EXPECT_TRUE(big.contains(6));
-    EXPECT_FALSE(big.contains(1));
+    for (int x : {1, 2, 3, 4, 5, 6}) t.Insert(x);
+    auto big = t.Where([](const int& x) { return x > 3; });
+    EXPECT_EQ(big.Size(), 3u);
+    EXPECT_TRUE(big.Contains(4));
+    EXPECT_TRUE(big.Contains(5));
+    EXPECT_TRUE(big.Contains(6));
+    EXPECT_FALSE(big.Contains(1));
 }
 
 TEST(MapReduce, WhereEmptyResult)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3}) t.insert(x);
-    auto nothing = t.where([](const int& x) { return x > 100; });
-    EXPECT_TRUE(nothing.empty());
+    for (int x : {1, 2, 3}) t.Insert(x);
+    auto nothing = t.Where([](const int& x) { return x > 100; });
+    EXPECT_TRUE(nothing.Empty());
 }
 
 TEST(MapReduce, ReduceSum)
 {
     BinaryTree<int> t;
-    for (int x : {1, 2, 3, 4, 5}) t.insert(x);
-    int sum = t.reduce<int>([](const int& x, int acc) { return acc + x; }, 0);
+    for (int x : {1, 2, 3, 4, 5}) t.Insert(x);
+    int sum = t.Reduce<int>([](const int& x, int acc) { return acc + x; }, 0);
     EXPECT_EQ(sum, 15);
 }
 
 TEST(Subtrees, ExtractAndContain)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1, 6}) t.insert(x);
-    auto sub = t.extractSubtree(5);
-    EXPECT_TRUE(sub.contains(5));
-    EXPECT_TRUE(t.containsSubtree(sub));
+    for (int x : {10, 5, 15, 1, 6}) t.Insert(x);
+    auto sub = t.ExtractSubtree(5);
+    EXPECT_TRUE(sub.Contains(5));
+    EXPECT_TRUE(t.ContainsSubtree(sub));
 }
 
 TEST(Subtrees, ExtractMissingThrows)
 {
     BinaryTree<int> t;
-    t.insert(1);
-    EXPECT_THROW(t.extractSubtree(999), std::out_of_range);
+    t.Insert(1);
+    EXPECT_THROW(t.ExtractSubtree(999), std::out_of_range);
 }
 
 TEST(Subtrees, EmptySubtree)
 {
     BinaryTree<int> t;
-    t.insert(1);
+    t.Insert(1);
     BinaryTree<int> empty;
-    EXPECT_TRUE(t.containsSubtree(empty));
+    EXPECT_TRUE(t.ContainsSubtree(empty));
 }
 
 TEST(Path, FindByAbsolutePath)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.insert(x);
+    for (int x : {10, 5, 15, 1}) t.Insert(x);
     int v = 0;
-    EXPECT_TRUE(t.findByPath("10", v));
+    EXPECT_TRUE(t.FindByPath("10", v));
     EXPECT_EQ(v, 10);
-    EXPECT_TRUE(t.findByPath("10.5", v));
+    EXPECT_TRUE(t.FindByPath("10.5", v));
     EXPECT_EQ(v, 5);
-    EXPECT_TRUE(t.findByPath("10.5.1", v));
+    EXPECT_TRUE(t.FindByPath("10.5.1", v));
     EXPECT_EQ(v, 1);
-    EXPECT_FALSE(t.findByPath("10.999", v));
-    EXPECT_FALSE(t.findByPath("999", v));
+    EXPECT_FALSE(t.FindByPath("10.999", v));
+    EXPECT_FALSE(t.FindByPath("999", v));
 }
 
 TEST(Path, FindByRelativePath)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15}) t.insert(x);
+    for (int x : {10, 5, 15}) t.Insert(x);
     int v = 0;
-    EXPECT_TRUE(t.findByRelativePath("10.15", v));
+    EXPECT_TRUE(t.FindByRelativePath("10.15", v));
     EXPECT_EQ(v, 15);
 }
 
 TEST(SaveLoad, RoundTrip)
 {
     BinaryTree<int> t;
-    for (int x : {10, 5, 15, 1}) t.insert(x);
-    std::string s = t.saveToString();
-    auto t2 = BinaryTree<int>::loadFromString(s);
+    for (int x : {10, 5, 15, 1}) t.Insert(x);
+    std::string s = t.SaveToString();
+    auto t2 = BinaryTree<int>::LoadFromString(s);
     
     MyVector<int> a, b;
-    t.preorder([&](int v) { a.push_back(v); });
-    t2.preorder([&](int v) { b.push_back(v); });
-    
+    t.Preorder([&](int v) { a.push_back(v); });
+    t2.Preorder([&](int v) { b.push_back(v); });
     ASSERT_EQ(a.size(), b.size());
     for (size_t i = 0; i < a.size(); i++)
         EXPECT_EQ(a[i], b[i]);
-    EXPECT_EQ(t2.size(), t.size());
+    EXPECT_EQ(t2.Size(), t.Size());
 }
 
 TEST(SaveLoad, EmptyTree)
 {
     BinaryTree<int> t;
-    std::string s = t.saveToString();
-    EXPECT_EQ(s, "()");
-    auto t2 = BinaryTree<int>::loadFromString(s);
-    EXPECT_TRUE(t2.empty());
+    std::string s = t.SaveToString();
+    EXPECT_EQ(s, "# ");          // для пустого дерева ожидается "# "
+    auto t2 = BinaryTree<int>::LoadFromString(s);
+    EXPECT_TRUE(t2.Empty());
 }
 
 TEST(TypesDouble, Basic)
 {
     BinaryTree<double> t;
-    t.insert(2.5);
-    t.insert(1.0);
-    t.insert(3.14);
-    t.insert(0.5);
-    EXPECT_EQ(t.size(), 4u);
-    EXPECT_TRUE(t.contains(2.5));
-    EXPECT_FALSE(t.contains(9.99));
+    t.Insert(2.5);
+    t.Insert(1.0);
+    t.Insert(3.14);
+    t.Insert(0.5);
+    EXPECT_EQ(t.Size(), 4u);
+    EXPECT_TRUE(t.Contains(2.5));
+    EXPECT_FALSE(t.Contains(9.99));
 }
 
 TEST(TypesString, Basic)
 {
     BinaryTree<std::string> t;
-    t.insert("m");
-    t.insert("a");
-    t.insert("z");
-    t.insert("b");
-    EXPECT_EQ(t.size(), 4u);
-    EXPECT_TRUE(t.contains("a"));
-    EXPECT_FALSE(t.contains("x"));
+    t.Insert("m");
+    t.Insert("a");
+    t.Insert("z");
+    t.Insert("b");
+    EXPECT_EQ(t.Size(), 4u);
+    EXPECT_TRUE(t.Contains("a"));
+    EXPECT_FALSE(t.Contains("x"));
 }

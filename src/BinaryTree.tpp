@@ -40,6 +40,7 @@ const Node<T>* BinaryTree<T>::FindNode(const Node<T>* n, const T& v)
     return nullptr;
 }
 
+
 template <class T>
 BinaryTree<T>::BinaryTree(const BinaryTree& other)
     : root(CloneNode(other.root)), sz(other.sz) {}
@@ -83,6 +84,7 @@ BinaryTree<T>::~BinaryTree()
 {
     Destroy(root);
 }
+
 
 template <class T>
 Node<T>* BinaryTree<T>::InsertNode(Node<T>* n, const T& v, bool& inserted)
@@ -143,6 +145,7 @@ Node<T>* BinaryTree<T>::RemoveNode(Node<T>* n, const T& v, bool& removed)
     return n;
 }
 
+
 template <class T>
 void BinaryTree<T>::PreorderFill(const Node<T>* n, std::function<void(const T&)>& visitor)
 {
@@ -169,6 +172,7 @@ void BinaryTree<T>::InorderFill(const Node<T>* n, std::function<void(const T&)>&
     visitor(n->value);
     InorderFill(n->right, visitor);
 }
+
 
 template <class T>
 void BinaryTree<T>::Insert(const T& value)
@@ -235,6 +239,7 @@ void BinaryTree<T>::LevelOrder(std::function<void(const T&)> visitor) const
     }
 }
 
+
 template <class T>
 template <class R, class F>
 BinaryTree<R> BinaryTree<T>::Map(F f) const
@@ -262,6 +267,7 @@ R BinaryTree<T>::Reduce(std::function<R(const T&, R)> f, R start) const
     Preorder([&](const T& value) { accumulator = f(value, accumulator); });
     return accumulator;
 }
+
 
 template <class T>
 BinaryTree<T> BinaryTree<T>::ExtractSubtree(const T& rootValue) const
@@ -337,49 +343,29 @@ bool BinaryTree<T>::FindByRelativePath(const std::string& pathFromRoot, T& out) 
     return FindByPath(pathFromRoot, out);
 }
 
-template <class T>
-void BinaryTree<T>::Serialize(const Node<T>* n, std::ostream& os)
-{
-    if (!n) { os << "# "; return; }
-    os << n->value << ' ';
-    Serialize(n->left, os);
-    Serialize(n->right, os);
-}
-
-template <class T>
-Node<T>* BinaryTree<T>::Deserialize(std::istream& is)
-{
-    std::string token;
-    if (!(is >> token)) throw std::invalid_argument("Deserialize: unexpected end of input");
-    if (token == "#") return nullptr;
-    
-    T value{};
-    std::istringstream tokenReader(token);
-    if (!(tokenReader >> value)) throw std::invalid_argument("Deserialize: cannot read value");
-    
-    Node<T>* node = new Node<T>(value);
-    node->left = Deserialize(is);
-    node->right = Deserialize(is);
-    return node;
-}
 
 template <class T>
 std::string BinaryTree<T>::SaveToString() const
 {
     std::ostringstream oss;
-    Serialize(root, oss);
+    bool first = true;
+    Preorder([&](const T& value) {
+        if (!first) oss << ' ';
+        oss << value;
+        first = false;
+    });
     return oss.str();
 }
 
 template <class T>
 BinaryTree<T> BinaryTree<T>::LoadFromString(const std::string& s)
 {
-    std::istringstream iss(s);
     BinaryTree<T> result;
-    result.root = Deserialize(iss);
-    
-    size_t count = 0;
-    result.Preorder([&](const T&) { count++; });
-    result.sz = count;
+    std::istringstream iss(s);
+    T value;
+    while (iss >> value)
+    {
+        result.Insert(value);
+    }
     return result;
 }

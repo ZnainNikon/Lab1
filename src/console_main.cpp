@@ -6,67 +6,77 @@
 #include <sstream>
 #include <string>
 
-bool readInteger(const std::string& prompt, int& result)
+bool ReadInteger(const std::string& prompt, int& result)
 {
     std::cout << prompt;
     std::string line;
-    if (!std::getline(std::cin, line)) return false;
-    if (line.empty()) return false;
+    if (!std::getline(std::cin, line)) 
+        return false;
+    if (line.empty()) 
+        return false;
     try
     {
         size_t consumed = 0;
         long value = std::stol(line, &consumed);
-        while (consumed < line.size() && std::isspace((unsigned char)line[consumed])) consumed++;
-        if (consumed != line.size()) return false;
-        if (value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max()) return false;
+        while (consumed < line.size() && std::isspace((unsigned char)line[consumed]))
+        {
+            consumed++;
+        } 
+        if (consumed != line.size()) 
+            return false;
+        if (value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max()) 
+            return false;
         result = (int)value;
         return true;
     }
-    catch (std::exception&) { return false; }
+    catch (std::exception&) 
+    { 
+        return false; 
+    }
 }
 
-std::string readLine(const std::string& prompt)
+std::string ReadLine(const std::string& prompt)
 {
     std::cout << prompt;
     std::string line;
-    if (!std::getline(std::cin, line)) return "";
+    if (!std::getline(std::cin, line)) 
+        return "";
     return line;
 }
 
-void waitForEnter()
-{
-    std::cout << "\nНажмите Enter, чтобы продолжить...";
-    std::string ignored;
-    std::getline(std::cin, ignored);
+
+template <typename T>
+void PrintValue(const T& value) 
+{ 
+    std::cout << value; 
 }
 
-
 template <typename T>
-void printValue(const T& value) { std::cout << value; }
-
-template <typename T>
-std::string valueForTree(const T& value)
+std::string ValueForTree(const T& value)
 {
     std::ostringstream oss;
     oss << value;
     std::string text = oss.str();
-    if (text.length() > 12) text = text.substr(0, 11) + "…";
+    if (text.length() > 12) 
+        text = text.substr(0, 11) + "…";
     return text;
 }
 
 template <typename T>
-bool parseValue(const std::string& text, T& parsed)
+bool ParseValue(const std::string& text, T& parsed)
 {
-    if (text.empty()) return false;
+    if (text.empty()) 
+        return false;
     std::istringstream reader(text);
-    if (!(reader >> parsed)) return false;
+    if (!(reader >> parsed)) 
+        return false;
     reader >> std::ws;
     return reader.eof();
 }
 
 
 template <typename T>
-void printTraversal(const std::string& name, const BinaryTree<T>& tree, int type)
+void PrintTraversal(const std::string& name, const BinaryTree<T>& tree, int type)
 {
     std::cout << name << ": ";
     bool isEmpty = true;
@@ -75,92 +85,121 @@ void printTraversal(const std::string& name, const BinaryTree<T>& tree, int type
         isEmpty = false;
     };
 
-    if (type == 1) tree.preorder(printer);
-    else if (type == 2) tree.inorder(printer);
-    else if (type == 3) tree.postorder(printer);
-    else if (type == 4) tree.levelOrder(printer);
+    if (type == 1) 
+        tree.Preorder(printer);
+    else if (type == 2) 
+        tree.Inorder(printer);
+    else if (type == 3) 
+        tree.Postorder(printer);
+    else if (type == 4) 
+        tree.LevelOrder(printer);
 
-    if (isEmpty) std::cout << "(пусто)";
+    if (isEmpty) 
+        std::cout << "(пусто)";
     std::cout << "\n";
 }
 
 
 template <typename T>
-void printTree(const BinaryTree<T>& tree)
+void PrintTree(const BinaryTree<T>& tree)
 {
-    if (tree.empty()) {
+    if (tree.Empty()) 
+    {
         std::cout << "(дерево пусто)\n";
         return;
     }
 
-    struct PosNode {
-        const typename BinaryTree<T>::Node* node;
+    struct PosNode 
+    {
+        const Node<T>* node;
         int x;
         int y;
     };
 
-    MyVector<PosNode> nodes; 
+    MyVector<PosNode> nodes;
     int maxWidth = 0;
     int maxHeight = 0;
 
-    auto calcPos = [&](auto&& self, const typename BinaryTree<T>::Node* n, int x, int y) -> void {
-        if (!n) return;
-        std::string text = valueForTree(n->value);
+    // Рекурсивный расчёт координат
+    auto calcPos = [&](auto&& self, const Node<T>* n, int x, int y) -> void {
+        if (!n) 
+            return;
+        std::string text = ValueForTree(n->value);
         int textWidth = text.length();
         
         nodes.push_back({n, x, y});
-        if (x + textWidth > maxWidth) maxWidth = x + textWidth;
-        if (y > maxHeight) maxHeight = y;
+        if (x + textWidth > maxWidth) 
+            maxWidth = x + textWidth;
+        if (y > maxHeight) 
+            maxHeight = y;
         
         int shift = textWidth + 2;
-        if (n->left) self(self, n->left.get(), x - shift, y + 1);
-        if (n->right) self(self, n->right.get(), x + shift, y + 1);
+        if (n->left) 
+            self(self, n->left, x - shift, y + 1);
+        if (n->right) 
+            self(self, n->right, x + shift, y + 1);
     };
 
-    calcPos(calcPos, tree.getRoot().get(), 80, 0);
+    calcPos(calcPos, tree.GetRoot(), 80, 0);
 
     int rows = maxHeight * 2 + 1;
     int cols = maxWidth + 40;
     
+    // Создаём холст
     char** canvas = new char*[rows];
-    for (int r = 0; r < rows; r++) {
+    for (int r = 0; r < rows; r++) 
+    {
         canvas[r] = new char[cols];
         for (int c = 0; c < cols; c++) canvas[r][c] = ' ';
     }
 
-    for (size_t i = 0; i < nodes.size(); i++) {
+    // Рисуем линии
+    for (size_t i = 0; i < nodes.size(); i++) 
+    {
         const auto& pos = nodes[i];
-        if (pos.node->left) {
+        if (pos.node->left) 
+        {
             int startX = pos.x - 1; 
             int startY = pos.y * 2 + 1;
-            for (size_t j = 0; j < nodes.size(); j++) {
+            for (size_t j = 0; j < nodes.size(); j++) 
+            {
                 const auto& childPos = nodes[j];
-                if (childPos.node == pos.node->left.get()) {
-                    int endX = childPos.x + valueForTree(childPos.node->value).length() / 2;
+                if (childPos.node == pos.node->left) 
+                {
+                    int endX = childPos.x + ValueForTree(childPos.node->value).length() / 2;
                     int endY = childPos.y * 2;
-                    for (int k = 0; k < 10; k++) {
+                    for (int k = 0; k < 10; k++) 
+                    {
                         int cx = startX - (startX - endX) * k / 10;
                         int cy = startY - (startY - endY) * k / 10;
-                        if (cy >= 0 && cy < rows && cx >= 0 && cx < cols) {
-                            if (canvas[cy][cx] == ' ') canvas[cy][cx] = '/';
+                        if (cy >= 0 && cy < rows && cx >= 0 && cx < cols) 
+                        {
+                            if (canvas[cy][cx] == ' ') 
+                                canvas[cy][cx] = '/';
                         }
                     }
                 }
             }
         }
-        if (pos.node->right) {
-            int startX = pos.x + valueForTree(pos.node->value).length();
+        if (pos.node->right) 
+        {
+            int startX = pos.x + ValueForTree(pos.node->value).length();
             int startY = pos.y * 2 + 1;
-            for (size_t j = 0; j < nodes.size(); j++) {
+            for (size_t j = 0; j < nodes.size(); j++) 
+            {
                 const auto& childPos = nodes[j];
-                if (childPos.node == pos.node->right.get()) {
-                    int endX = childPos.x + valueForTree(childPos.node->value).length() / 2;
+                if (childPos.node == pos.node->right) 
+                {
+                    int endX = childPos.x + ValueForTree(childPos.node->value).length() / 2;
                     int endY = childPos.y * 2;
-                    for (int k = 0; k < 10; k++) {
+                    for (int k = 0; k < 10; k++) 
+                    {
                         int cx = startX + (endX - startX) * k / 10;
                         int cy = startY - (startY - endY) * k / 10;
-                        if (cy >= 0 && cy < rows && cx >= 0 && cx < cols) {
-                            if (canvas[cy][cx] == ' ') canvas[cy][cx] = '\\';
+                        if (cy >= 0 && cy < rows && cx >= 0 && cx < cols) 
+                        {
+                            if (canvas[cy][cx] == ' ') 
+                                canvas[cy][cx] = '\\';
                         }
                     }
                 }
@@ -168,29 +207,42 @@ void printTree(const BinaryTree<T>& tree)
         }
     }
 
-    for (size_t i = 0; i < nodes.size(); i++) {
+    // Рисуем текст
+    for (size_t i = 0; i < nodes.size(); i++) 
+    {
         const auto& pos = nodes[i];
-        std::string text = valueForTree(pos.node->value);
+        std::string text = ValueForTree(pos.node->value);
         int startX = pos.x - text.length() / 2;
         int y = pos.y * 2;
-        for (size_t k = 0; k < text.length(); k++) {
+        for (size_t k = 0; k < text.length(); k++) 
+        {
             int cx = startX + k;
-            if (cx >= 0 && cx < cols && y >= 0 && y < rows) {
+            if (cx >= 0 && cx < cols && y >= 0 && y < rows) 
+            {
                 canvas[y][cx] = text[k];
             }
         }
     }
 
+    // Вывод
     std::cout << "\n";
-    for (int y = 0; y < rows; y++) {
+    for (int y = 0; y < rows; y++) 
+    {
         bool hasContent = false;
-        for (int x = 0; x < cols; x++) {
-            if (canvas[y][x] != ' ') hasContent = true;
+        for (int x = 0; x < cols; x++) 
+        {
+            if (canvas[y][x] != ' ') 
+                hasContent = true;
         }
-        if (hasContent) {
+        if (hasContent) 
+        {
             int lastChar = cols - 1;
-            while (lastChar >= 0 && canvas[y][lastChar] == ' ') lastChar--;
-            for (int x = 0; x <= lastChar; x++) {
+            while (lastChar >= 0 && canvas[y][lastChar] == ' ') 
+            {
+                lastChar--;
+            }
+            for (int x = 0; x <= lastChar; x++) 
+            {
                 std::cout << canvas[y][x];
             }
             std::cout << "\n";
@@ -199,12 +251,13 @@ void printTree(const BinaryTree<T>& tree)
     std::cout << "\n";
 
     // Очистка памяти
-    for (int r = 0; r < rows; r++) delete[] canvas[r];
+    for (int r = 0; r < rows; r++) 
+        delete[] canvas[r];
     delete[] canvas;
 }
 
 
-void printMenu(const char* typeName, size_t size)
+void PrintMenu(const char* typeName, size_t size)
 {
     std::cout << "\n===== Бинарное дерево (" << typeName
               << ", узлов: " << size << ") =====\n";
@@ -223,107 +276,145 @@ void printMenu(const char* typeName, size_t size)
 
 
 template <typename T>
-void handleInsert(BinaryTree<T>& tree)
+void HandleInsert(BinaryTree<T>& tree)
 {
-    std::string line = readLine("Введите значения через пробел: ");
-    if (line.empty()) { std::cout << "Пустой ввод.\n"; return; }
+    std::string line = ReadLine("Введите значения через пробел: ");
+    if (line.empty()) 
+    { 
+        std::cout << "Пустой ввод.\n"; 
+        return; 
+    }
 
     std::istringstream reader(line);
     int added = 0, duplicates = 0, invalid = 0;
+
     while (true)
     {
         T value{};
         if (reader >> value)
         {
-            size_t before = tree.size();
-            tree.insert(value);
-            if (tree.size() > before) added++;
-            else duplicates++;
+            size_t before = tree.Size();
+            tree.Insert(value);
+            if (tree.Size() > before) 
+                added++;
+            else 
+                duplicates++;
             continue;
         }
-        if (reader.eof()) break;
+        if (reader.eof()) 
+            break;
         reader.clear();
         std::string garbage;
         reader >> garbage;
         invalid++;
     }
     std::cout << "Добавлено: " << added;
-    if (duplicates > 0) std::cout << ", дубликатов: " << duplicates;
-    if (invalid > 0) std::cout << ", некорректных токенов: " << invalid;
+    if (duplicates > 0) 
+        std::cout << ", дубликатов: " << duplicates;
+    if (invalid > 0) 
+        std::cout << ", некорректных токенов: " << invalid;
     std::cout << "\n";
 }
 
 template <typename T>
-void handleFind(BinaryTree<T>& tree)
+void HandleFind(BinaryTree<T>& tree)
 {
-    std::string text = readLine("Значение для поиска: ");
+    std::string text = ReadLine("Значение для поиска: ");
     T value{};
-    if (!parseValue<T>(text, value)) { std::cout << "Некорректное значение.\n"; return; }
-    std::cout << (tree.contains(value) ? "Найдено.\n" : "Не найдено.\n");
+    if (!ParseValue<T>(text, value)) 
+    { 
+        std::cout << "Некорректное значение.\n"; 
+        return; 
+    }
+    std::cout << (tree.Contains(value) ? "Найдено.\n" : "Не найдено.\n");
 }
 
 template <typename T>
-void handleRemove(BinaryTree<T>& tree)
+void HandleRemove(BinaryTree<T>& tree)
 {
-    std::string text = readLine("Значение для удаления: ");
+    std::string text = ReadLine("Значение для удаления: ");
     T value{};
-    if (!parseValue<T>(text, value)) { std::cout << "Некорректное значение.\n"; return; }
-    size_t before = tree.size();
-    tree.remove(value);
-    std::cout << (tree.size() < before ? "Удалено.\n" : "Не найдено.\n");
+    if (!ParseValue<T>(text, value)) 
+    { 
+        std::cout << "Некорректное значение.\n"; 
+        return; 
+    }
+    size_t before = tree.Size();
+    tree.Remove(value);
+    std::cout << (tree.Size() < before ? "Удалено.\n" : "Не найдено.\n");
 }
 
 template <typename T>
-void handleTraversals(BinaryTree<T>& tree)
+void HandleTraversals(BinaryTree<T>& tree)
 {
-    printTraversal("Preorder ", tree, 1);
-    printTraversal("Inorder  ", tree, 2);
-    printTraversal("Postorder", tree, 3);
-    printTraversal("Level    ", tree, 4);
+    PrintTraversal("Preorder ", tree, 1);
+    PrintTraversal("Inorder  ", tree, 2);
+    PrintTraversal("Postorder", tree, 3);
+    PrintTraversal("Level    ", tree, 4);
 }
 
 template <typename T>
-void handleFindByPath(BinaryTree<T>& tree)
+void HandleFindByPath(BinaryTree<T>& tree)
 {
-    std::string path = readLine("Путь через точку (например 10.5.1): ");
-    if (path.empty()) { std::cout << "Путь не может быть пустым.\n"; return; }
+    std::string path = ReadLine("Путь через точку (например 10.5.1): ");
+    if (path.empty()) 
+    { 
+        std::cout << "Путь не может быть пустым.\n"; 
+        return; 
+    }
     T found{};
-    if (tree.findByPath(path, found)) { std::cout << "Найдено: "; printValue(found); std::cout << "\n"; }
+    if (tree.FindByPath(path, found)) 
+    { 
+        std::cout << "Найдено: "; 
+        PrintValue(found); 
+        std::cout << "\n"; 
+    }
     else std::cout << "Путь не найден.\n";
 }
 
 template <typename T>
-void handleExtractSubtree(BinaryTree<T>& tree)
+void HandleExtractSubtree(BinaryTree<T>& tree)
 {
-    std::string text = readLine("Значение корня поддерева: ");
+    std::string text = ReadLine("Значение корня поддерева: ");
     T value{};
-    if (!parseValue<T>(text, value)) { std::cout << "Некорректное значение.\n"; return; }
-    if (!tree.contains(value)) { std::cout << "Такого узла нет.\n"; return; }
-    
-    BinaryTree<T> subtree = tree.extractSubtree(value);
-    std::cout << "Поддерево: узлов " << subtree.size() << "\n";
+    if (!ParseValue<T>(text, value)) 
+    { 
+        std::cout << "Некорректное значение.\n"; 
+        return; 
+    }
+    if (!tree.Contains(value)) 
+    { 
+        std::cout << "Такого узла нет.\n"; 
+        return; 
+    }
+    BinaryTree<T> subtree = tree.ExtractSubtree(value);
+    std::cout << "Поддерево: узлов " << subtree.Size() << "\n";
     std::cout << "Preorder: ";
-    subtree.preorder([](const T& v) { std::cout << v << " "; });
+    subtree.Preorder([](const T& v) { std::cout << v << " "; });
     std::cout << "\n";
 }
 
 template <typename T>
-void handleSave(const BinaryTree<T>& tree)
+void HandleSave(const BinaryTree<T>& tree)
 {
-    std::cout << "Строка: " << tree.saveToString() << "\n";
+    std::cout << "Строка: " << tree.SaveToString() << "\n";
 }
 
 template <typename T>
-void handleLoad(BinaryTree<T>& tree)
+void HandleLoad(BinaryTree<T>& tree)
 {
-    std::string text = readLine("Строка в формате (10 (5 () ()) (15 () ())): ");
-    if (text.empty()) { std::cout << "Строка пуста.\n"; return; }
+    std::string text = ReadLine("Введите значения в preorder (например: 10 5 3 7 15): ");
+    if (text.empty()) 
+    { 
+        std::cout << "Строка пуста.\n"; 
+        return; 
+    }
     try
     {
-        BinaryTree<T> loaded = BinaryTree<T>::loadFromString(text);
+        BinaryTree<T> loaded = BinaryTree<T>::LoadFromString(text);
         tree = loaded;
-        std::cout << "Загружено, узлов: " << tree.size() << "\n";
-        printTree(tree);
+        std::cout << "Загружено, узлов: " << tree.Size() << "\n";
+        PrintTree(tree);
     }
     catch (std::exception& exception)
     {
@@ -332,18 +423,18 @@ void handleLoad(BinaryTree<T>& tree)
 }
 
 template <typename T>
-void handleClear(BinaryTree<T>& tree)
+void HandleClear(BinaryTree<T>& tree)
 {
-    tree.clear();
+    tree.Clear();
     std::cout << "Дерево очищено.\n";
 }
 
-int askMenuChoice()
+int AskMenuChoice()
 {
     while (true)
     {
         int choice = -1;
-        if (!readInteger("Выбор: ", choice))
+        if (!ReadInteger("Выбор: ", choice))
         {
             std::cout << "Ошибка: введите целое число от 0 до 10.\n";
             continue;
@@ -357,7 +448,7 @@ int askMenuChoice()
     }
 }
 
-int askValueType()
+int AskValueType()
 {
     std::cout << "Выберите тип значений:\n";
     std::cout << " 1. int\n";
@@ -366,7 +457,7 @@ int askValueType()
     while (true)
     {
         int choice = -1;
-        if (!readInteger("Выбор: ", choice))
+        if (!ReadInteger("Выбор: ", choice))
         {
             std::cout << "Ошибка: введите 1, 2 или 3.\n";
             continue;
@@ -381,47 +472,46 @@ int askValueType()
 }
 
 template <typename T>
-void runTree(const char* typeName)
+void RunTree(const char* typeName)
 {
     BinaryTree<T> tree;
     while (true)
     {
-        printMenu(typeName, tree.size());
-        int choice = askMenuChoice();
+        PrintMenu(typeName, tree.Size());
+        int choice = AskMenuChoice();
         if (choice == 0) { std::cout << "Выход.\n"; return; }
         try
         {
             switch (choice)
             {
-                case 1: handleInsert(tree); break;
-                case 2: handleFind(tree); break;
-                case 3: handleRemove(tree); break;
-                case 4: handleTraversals(tree); break;
-                case 5: printTree(tree); break;
-                case 6: handleFindByPath(tree); break;
-                case 7: handleExtractSubtree(tree); break;
-                case 8: handleSave(tree); break;
-                case 9: handleLoad(tree); break;
-                case 10: handleClear(tree); break;
+                case 1: HandleInsert(tree); break;
+                case 2: HandleFind(tree); break;
+                case 3: HandleRemove(tree); break;
+                case 4: HandleTraversals(tree); break;
+                case 5: PrintTree(tree); break;
+                case 6: HandleFindByPath(tree); break;
+                case 7: HandleExtractSubtree(tree); break;
+                case 8: HandleSave(tree); break;
+                case 9: HandleLoad(tree); break;
+                case 10: HandleClear(tree); break;
             }
         }
         catch (std::exception& exception)
         {
             std::cout << "Ошибка: " << exception.what() << "\n";
         }
-        waitForEnter();
     }
 }
 
 int main()
 {
     std::cout << "Бинарное дерево — консольный интерфейс\n\n";
-    int typeChoice = askValueType();
+    int typeChoice = AskValueType();
     switch (typeChoice)
     {
-        case 1: runTree<int>("int"); break;
-        case 2: runTree<double>("double"); break;
-        case 3: runTree<std::string>("string"); break;
+        case 1: RunTree<int>("int"); break;
+        case 2: RunTree<double>("double"); break;
+        case 3: RunTree<std::string>("string"); break;
     }
     return 0;
 }

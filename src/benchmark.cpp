@@ -50,17 +50,17 @@ int main()
             for (size_t i = 0; i < n; i++)
             {
                 val = (val * 1103515245 + 12345) % n;
-                tree.insert((int)val);
+                tree.Insert((int)val);
             }
         });
         double FindTime = Time([&]() {
             for (size_t i = 0; i < n; i++)
-                tree.contains((int)i);
-            tree.contains(-999);
+                tree.Contains((int)i);
+            tree.Contains(-999);
         });
         double RemoveTime = Time([&]() {
             for (size_t i = 0; i < n; i++)
-                tree.remove((int)i);
+                tree.Remove((int)i);
         });
         Print(n, InsertTime, FindTime, RemoveTime);
     }
