@@ -338,7 +338,8 @@ bool BinaryTree<T>::ContainsSubtree(const BinaryTree<T>& other) const
 template <class T>
 bool BinaryTree<T>::FindByPath(const std::string& path, T& out) const
 {
-    if (!root) return false;
+    if (!root) 
+        return false;
     std::istringstream reader(path);
     std::string token;
     const Node<T>* current = root;
@@ -347,9 +348,9 @@ bool BinaryTree<T>::FindByPath(const std::string& path, T& out) const
     {
         if (token.empty()) 
             continue;
-        T value{};
-        std::istringstream tokenReader(token);
-        if (!(tokenReader >> value))    
+        T value {};
+        std::istringstream TokenReader(token);
+        if (!(TokenReader >> value))    
             return false;
         if (first)
         {
@@ -386,7 +387,8 @@ std::string BinaryTree<T>::SaveToString() const
     std::ostringstream oss;
     bool first = true;
     Preorder([&](const T& value) {
-        if (!first) oss << ' ';
+        if (!first) 
+            oss << ' ';
         oss << value;
         first = false;
     });
