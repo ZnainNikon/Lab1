@@ -120,7 +120,6 @@ void PrintTree(const BinaryTree<T>& tree)
     int maxWidth = 0;
     int maxHeight = 0;
 
-    // Рекурсивный расчёт координат
     auto calcPos = [&](auto&& self, const Node<T>* n, int x, int y) -> void {
         if (!n) 
             return;
@@ -145,7 +144,6 @@ void PrintTree(const BinaryTree<T>& tree)
     int rows = maxHeight * 2 + 1;
     int cols = maxWidth + 40;
     
-    // Создаём холст
     char** canvas = new char*[rows];
     for (int r = 0; r < rows; r++) 
     {
@@ -153,7 +151,6 @@ void PrintTree(const BinaryTree<T>& tree)
         for (int c = 0; c < cols; c++) canvas[r][c] = ' ';
     }
 
-    // Рисуем линии
     for (size_t i = 0; i < nodes.size(); i++) 
     {
         const auto& pos = nodes[i];
@@ -207,7 +204,6 @@ void PrintTree(const BinaryTree<T>& tree)
         }
     }
 
-    // Рисуем текст
     for (size_t i = 0; i < nodes.size(); i++) 
     {
         const auto& pos = nodes[i];
@@ -224,7 +220,6 @@ void PrintTree(const BinaryTree<T>& tree)
         }
     }
 
-    // Вывод
     std::cout << "\n";
     for (int y = 0; y < rows; y++) 
     {
@@ -250,7 +245,6 @@ void PrintTree(const BinaryTree<T>& tree)
     }
     std::cout << "\n";
 
-    // Очистка памяти
     for (int r = 0; r < rows; r++) 
         delete[] canvas[r];
     delete[] canvas;
@@ -259,8 +253,7 @@ void PrintTree(const BinaryTree<T>& tree)
 
 void PrintMenu(const char* typeName, size_t size)
 {
-    std::cout << "\n===== Бинарное дерево (" << typeName
-              << ", узлов: " << size << ") =====\n";
+    std::cout << "\n===== Бинарное дерево (" << typeName << ", узлов: " << size << ") =====\n";
     std::cout << " 1. Вставить значения\n";
     std::cout << " 2. Поиск значения\n";
     std::cout << " 3. Удалить значение\n";
@@ -320,7 +313,7 @@ template <class T>
 void HandleFind(BinaryTree<T>& tree)
 {
     std::string text = ReadLine("Значение для поиска: ");
-    T value{};
+    T value {};
     if (!ParseValue<T>(text, value)) 
     { 
         std::cout << "Некорректное значение.\n"; 
@@ -459,7 +452,7 @@ int AskValueType()
         int choice = -1;
         if (!ReadInteger("Выбор: ", choice))
         {
-            std::cout << "Ошибка: введите 1, 2 или 3.\n";
+            std::cout << "Ошибка: 1, 2 или 3.\n";
             continue;
         }
         if (choice < 1 || choice > 3)
@@ -479,7 +472,11 @@ void RunTree(const char* typeName)
     {
         PrintMenu(typeName, tree.Size());
         int choice = AskMenuChoice();
-        if (choice == 0) { std::cout << "Выход.\n"; return; }
+        if (choice == 0) 
+        { 
+            std::cout << "Выход.\n"; 
+            return; 
+        }
         try
         {
             switch (choice)
